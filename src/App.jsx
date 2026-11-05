@@ -1,1138 +1,982 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Sparkles,
   ArrowRight,
-  Check,
-  ShieldCheck,
   Zap,
+  Rocket,
+  Menu,
+  X,
+  Check,
   Smartphone,
+  ShieldCheck,
+  Sparkles,
   ShoppingBag,
-  Clock,
-  ChevronRight,
-  Star,
+  Calendar,
+  ChevronDown,
   Lock,
-  TrendingUp,
+  AlertCircle,
+  CheckCircle2,
+  Sliders,
+  Star,
+  ArrowUpRight,
+  MousePointerClick,
+  Bell,
+  Eye,
+  ChevronRight,
+  ChevronLeft,
+  Flame,
+  Shirt,
   Award,
   MapPin,
-  RefreshCw,
-  Layers,
-  BarChart3,
-  CheckCircle2,
-  ExternalLink,
-  Calendar,
-  Wrench,
-  Package,
-  Sliders,
-  DollarSign,
-  ChevronDown
+  Clock
 } from 'lucide-react';
 
-const STORES = [
-  {
-    id: 'poma',
-    brand: 'LA POMA LAB',
-    domain: 'lapomalab.com',
-    category: 'Apple & Servicio Técnico',
-    badge: 'GARANTÍA 24 MESES · TALLER CERTIFICADO',
-    title: 'iPhone 15 Pro · Titanio & Taller Express',
-    rating: '4.9',
-    reviews: '312 reseñas verificadas',
-    colors: [
-      { id: 'natural', name: 'Titanio Natural', hex: '#a8a29e' },
-      { id: 'blue', name: 'Titanio Azul', hex: '#38bdf8' },
-      { id: 'black', name: 'Titanio Negro', hex: '#27272a' }
-    ],
-    optionsLabel: 'Selecciona modalidad (Stock o Reparación en el acto):',
-    options: [
-      {
-        id: '128gb',
-        name: 'Comprar iPhone 15 Pro · 128GB (Salud Batería 100%)',
-        tag: 'Stock inmediato',
-        price: 749,
-        oldPrice: 899,
-        isRepair: false
-      },
-      {
-        id: '256gb',
-        name: 'Comprar iPhone 15 Pro · 256GB (Salud Batería 100%)',
-        tag: 'Más vendido',
-        price: 829,
-        oldPrice: 979,
-        isRepair: false
-      },
-      {
-        id: 'repair',
-        name: 'Reservar Taller · Cambio Pantalla Original OLED (60 min)',
-        tag: 'Cita Express',
-        price: 119,
-        oldPrice: 149,
-        isRepair: true
-      }
-    ],
-    slots: ['Hoy · 17:30h', 'Mañana · 11:00h', 'Mañana · 16:30h']
-  },
-  {
-    id: 'vertice',
-    brand: 'VÉRTICE STUDIO',
-    domain: 'verticestudio.com',
-    category: 'Estudio Aromático & Lifestyle',
-    badge: 'CERA DE SOJA 100% ORGÁNICA · HECHO EN VALENCIA',
-    title: 'N°04 Santal & Cedro Ahumado',
-    rating: '4.9',
-    reviews: '184 reseñas verificadas',
-    optionsLabel: 'Selecciona formato y duración:',
-    options: [
-      {
-        id: 'std',
-        name: 'Formato Estándar · 250g (45h de combustión)',
-        tag: 'Clásico',
-        price: 38,
-        oldPrice: 45,
-        flames: 1,
-        isPack: false
-      },
-      {
-        id: 'xl',
-        name: 'Formato XL Estudio · 500g Doble Mecha (90h)',
-        tag: 'Best Seller',
-        price: 64,
-        oldPrice: 78,
-        flames: 2,
-        isPack: false
-      },
-      {
-        id: 'pack',
-        name: 'Pack Ritual Completo · 2x250g + Cortamechas Mate',
-        tag: 'Ahorra 20%',
-        price: 72,
-        oldPrice: 90,
-        flames: 2,
-        isPack: true
-      }
-    ]
-  },
-  {
-    id: 'nomada',
-    brand: 'NÓMADA CLUB',
-    domain: 'nomadaclub.es',
-    category: 'Moda & Heavyweight Streetwear',
-    badge: 'ALGODÓN PEINADO 500 GSM · DROP LIMITADO',
-    title: 'Heavy Boxy Hoodie · Carbon Edition',
-    rating: '5.0',
-    reviews: '429 reseñas verificadas',
-    sizes: ['S', 'M', 'L', 'XL'],
-    optionsLabel: 'Selecciona pack o edición:',
-    options: [
-      {
-        id: 'single',
-        name: 'Hoodie Boxy 500gsm · Edición Individual',
-        tag: 'Drop 04',
-        price: 68,
-        oldPrice: 85
-      },
-      {
-        id: 'duo',
-        name: 'Pack Dúo · Hoodie 500gsm + Camiseta 280gsm',
-        tag: 'Más popular',
-        price: 94,
-        oldPrice: 120
-      },
-      {
-        id: 'full',
-        name: 'Full Set Nómada · Hoodie + Pantalón + Gorra',
-        tag: 'Pack Completo',
-        price: 139,
-        oldPrice: 175
-      }
-    ]
-  }
-];
-
-const BUILD_STEPS = [
-  { id: 0, num: '01', code: 'STRUCTURE', desc: 'Wireframe, header, grid y navegación limpia.' },
-  { id: 1, num: '02', code: 'DESIGN', desc: 'Tipografía de alto impacto, paleta Ice Blue y microinteracciones.' },
-  { id: 2, num: '03', code: 'PRODUCT', desc: 'Galería de producto, variantes dinámicas y botón de compra directa.' },
-  { id: 3, num: '04', code: 'CONVERSION', desc: 'Reseñas sociales, insignias de confianza y upsells integrados.' },
-  { id: 4, num: '05', code: 'DATA', desc: 'Meta Pixel, Google Analytics 4 y automatización con Klaviyo.' },
-  { id: 5, num: '06', code: 'READY', desc: 'Tienda completamente operativa y lista para recibir clientes.' }
-];
-
-const PROCESS_TIMELINE = [
-  { num: '01', title: 'Cuéntanos tu proyecto', desc: 'Analizamos tu catálogo o servicios y tus objetivos comerciales.' },
-  { num: '02', title: 'Validamos encaje', desc: 'Definimos la arquitectura idónea sin añadir herramientas innecesarias.' },
-  { num: '03', title: 'Construimos', desc: 'Diseñamos y programamos la infraestructura completa en Shopify.' },
-  { num: '04', title: 'Revisamos', desc: 'Ajustamos detalles, pasarelas de pago y experiencia en móviles.' },
-  { num: '05', title: 'Te enseñamos', desc: 'Sesión formativa 1 a 1 para que controles tu tienda sin depender de nadie.' },
-  { num: '06', title: 'Lanzamos', desc: 'Publicación oficial y soporte directo para empezar a vender.' }
-];
-
 export default function App() {
-  const [salesCount, setSalesCount] = useState(14);
-  const [revenueToday, setRevenueToday] = useState(1840);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // --- FINAL PRODUCTION COLOR PALETTE: ELECTRIC ICE BLUE (#38bdf8) ---
+  const accent = {
+    hex: '#38bdf8',
+    hexSoft: 'rgba(56, 189, 248, 0.14)',
+    hexBorder: 'rgba(56, 189, 248, 0.45)',
+    hexGlow: 'rgba(56, 189, 248, 0.24)',
+    gradientText: 'linear-gradient(90deg, #ffffff 0%, #e0f2fe 45%, #38bdf8 100%)',
+    buttonText: '#030712'
+  };
+
+  // --- 1. HERO LIVE SHOPIFY SIMULATOR STATE ---
+  const [isSimulatingSales, setIsSimulatingSales] = useState(true);
+  const [simulatedRevenue, setSimulatedRevenue] = useState(1845);
+  const [pulseButton, setPulseButton] = useState(false);
   const [notifications, setNotifications] = useState([
-    { id: 1, store: 'LA POMA LAB', time: 'Ahora mismo', text: 'Nuevo pedido #1084 · iPhone 15 Pro 256GB · 829,00 €' },
-    { id: 2, store: 'LA POMA LAB · TALLER', time: 'Hace 4 min', text: 'Reserva confirmada · Pantalla OLED iPhone 14 · 119,00 €' },
-    { id: 3, store: 'VÉRTICE STUDIO', time: 'Hace 12 min', text: 'Nuevo pedido #412 · Pack Ritual 2x250g · 72,00 €' }
+    {
+      id: 1,
+      type: 'order',
+      store: 'LA POMA LAB',
+      title: 'Nuevo pedido #1084 · iPhone 15 Pro 256GB',
+      desc: 'Titanio Natural · Salud Batería 100% · Pagado con Pay',
+      amount: 829,
+      time: 'Hace 1 min',
+      badge: 'Envío Express 24h'
+    },
+    {
+      id: 2,
+      type: 'booking',
+      store: 'LA POMA LAB',
+      title: 'Cita Taller Confirmada · Cambio Pantalla OLED',
+      desc: 'Hoy 17:30h · Reparación en 1 hora · Pieza reservada',
+      amount: 119,
+      time: 'Hace 6 min',
+      badge: 'Taller Torrent'
+    },
+    {
+      id: 3,
+      type: 'order',
+      store: 'VÉRTICE STUDIO',
+      title: 'Nuevo pedido #1083 · Pack Colección',
+      desc: '2x250g Ámbar & Cedro + Cortamechas · Pay',
+      amount: 72,
+      time: 'Hace 14 min',
+      badge: 'Envío Gratis'
+    }
   ]);
 
-  const [storeMode, setStoreMode] = useState('fresh');
-  const [storeIndex, setStoreIndex] = useState(0);
-  const [selectedOptionIdx, setSelectedOptionIdx] = useState(0);
-  const [selectedColor, setSelectedColor] = useState('blue');
-  const [selectedSlot, setSelectedSlot] = useState('Hoy · 17:30h');
-  const [selectedSize, setSelectedSize] = useState('L');
-  const [checkoutSuccess, setCheckoutSuccess] = useState(false);
-  const [activeBuildStep, setActiveBuildStep] = useState(5);
-  const [ticketPromedio, setTicketPromedio] = useState(120);
+  const sampleNewOrders = [
+    {
+      type: 'order',
+      store: 'LA POMA LAB',
+      title: 'Nuevo pedido #1085 · iPhone 15 Pro 128GB',
+      desc: 'Titanio Azul · Reacondicionado Grado A+ · Klarna 3x',
+      amount: 749,
+      badge: 'Recogida en Tienda'
+    },
+    {
+      type: 'booking',
+      store: 'LA POMA LAB',
+      title: 'Cita Taller Confirmada · Cambio Pantalla OLED',
+      desc: 'Mañana 11:00h · Servicio Técnico Microelectrónica',
+      amount: 119,
+      badge: 'Cita Confirmada'
+    },
+    {
+      type: 'order',
+      store: 'VÉRTICE STUDIO',
+      title: 'Nuevo pedido #1086 · Formato XL 500g',
+      desc: 'Vela Botánica Doble Mecha (90h) · Pagado con Pay',
+      amount: 64,
+      badge: 'Envío 24h'
+    },
+    {
+      type: 'order',
+      store: 'NÓMADA CLUB',
+      title: 'Nuevo pedido #1087 · Full Studio Set',
+      desc: 'Boxy Hoodie 480gsm + Jogger · Talla L · Pay',
+      amount: 119,
+      badge: 'Drop Limitado'
+    }
+  ];
 
-  const currentStore = STORES[storeIndex];
-  const currentOption = currentStore.options[selectedOptionIdx] || currentStore.options[0];
+  const [orderPoolIndex, setOrderPoolIndex] = useState(0);
 
-  const handleSimulateSale = () => {
-    const samples = [
-      { store: 'LA POMA LAB', amount: 749, msg: 'Nuevo pedido · iPhone 15 Pro 128GB · 749,00 €' },
-      { store: 'LA POMA LAB · TALLER', amount: 119, msg: 'Cita pagada · Cambio Pantalla OLED · 119,00 €' },
-      { store: 'VÉRTICE STUDIO', amount: 64, msg: 'Nuevo pedido · Vela Formato XL 500g · 64,00 €' },
-      { store: 'NÓMADA CLUB', amount: 94, msg: 'Nuevo pedido · Pack Dúo Heavyweight · 94,00 €' }
-    ];
-    const pick = samples[Math.floor(Math.random() * samples.length)];
-    setSalesCount(c => c + 1);
-    setRevenueToday(r => r + pick.amount);
-    setNotifications(prev => [
-      { id: Date.now(), store: pick.store, time: 'Justo ahora', text: pick.msg },
-      ...prev.slice(0, 2)
-    ]);
+  const triggerManualSale = (customOrder = null) => {
+    setPulseButton(true);
+    setTimeout(() => setPulseButton(false), 350);
+
+    const nextItem = customOrder || sampleNewOrders[orderPoolIndex % sampleNewOrders.length];
+    const newNotif = {
+      id: Date.now(),
+      ...nextItem,
+      time: 'Ahora mismo'
+    };
+    setNotifications((prev) => [newNotif, ...prev.slice(0, 2)]);
+    setSimulatedRevenue((prev) => prev + nextItem.amount);
+    if (!customOrder) {
+      setOrderPoolIndex((prev) => prev + 1);
+    }
   };
 
-  const handleNextStore = () => {
-    setStoreIndex(prev => (prev + 1) % STORES.length);
-    setSelectedOptionIdx(0);
-    setCheckoutSuccess(false);
+  useEffect(() => {
+    if (!isSimulatingSales) return;
+    const interval = setInterval(() => {
+      triggerManualSale();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [isSimulatingSales, orderPoolIndex]);
+
+  // --- 2. INTERACTIVE STORE SHOWCASE STATE (LA POMA LAB -> VÉRTICE STUDIO -> NÓMADA CLUB) ---
+  const [comparisonMode, setComparisonMode] = useState('fresh');
+  const [categoryIndex, setCategoryIndex] = useState(0);
+  const [selectedVariantIdx, setSelectedVariantIdx] = useState(0);
+  const [selectedPhoneFinish, setSelectedPhoneFinish] = useState(0);
+  const [selectedRepairSlot, setSelectedRepairSlot] = useState('Hoy 17:30h');
+  const [selectedClothingSize, setSelectedClothingSize] = useState('L');
+  const [selectedHoodieColor, setSelectedHoodieColor] = useState(0);
+  const [applePaySuccess, setApplePaySuccess] = useState(false);
+
+  const phoneFinishes = [
+    {
+      name: 'Titanio Natural',
+      frame: 'from-stone-400 via-zinc-700 to-zinc-950',
+      border: 'border-stone-400/70',
+      swatch: 'bg-stone-400'
+    },
+    {
+      name: 'Titanio Azul',
+      frame: 'from-sky-800 via-slate-900 to-black',
+      border: 'border-sky-400/70',
+      swatch: 'bg-sky-700'
+    },
+    {
+      name: 'Titanio Negro',
+      frame: 'from-zinc-700 via-zinc-900 to-black',
+      border: 'border-zinc-500/70',
+      swatch: 'bg-zinc-800'
+    }
+  ];
+
+  const hoodieColors = [
+    { name: 'Obsidian Black', fill: '#121318', hood: '#181a20', stroke: '#52525b', swatch: 'bg-zinc-900' },
+    { name: 'Glacier Grey', fill: '#3f444e', hood: '#2f343d', stroke: '#94a3b8', swatch: 'bg-slate-500' },
+    { name: 'Washed Cobalt', fill: '#172554', hood: '#1e3a8a', stroke: '#38bdf8', swatch: 'bg-blue-900' }
+  ];
+
+  const storeCategories = [
+    {
+      id: 'tech',
+      pillLabel: 'La Poma Lab · Apple',
+      brandName: 'LA POMA LAB · Apple & Microelectrónica',
+      storeUrl: 'https://lapomalab.com',
+      badge: 'REACONDICIONADOS GRADO A+ & TALLER EXPRESS EN 1 HORA',
+      stockText: '● Disponible hoy en tienda o envío urgente 24h',
+      reviews: '4.9 ★ (248 reseñas verificadas)',
+      title: 'iPhone 15 Pro / Servicio Técnico Oficial',
+      subtitle:
+        'Arquitectura híbrida en Shopify: permite a tus clientes comprar terminales en stock con Klarna o reservar hora de reparación en el taller sin esperas.',
+      optionLabel: 'Selecciona Compra o Reserva de Taller (Cambia el precio en vivo):',
+      repairSlots: ['Hoy 17:30h', 'Mañana 11:00h', 'Mañana 16:30h'],
+      variants: [
+        {
+          id: '128gb',
+          name: 'iPhone 15 Pro · 128GB Reacondicionado (Salud 100%)',
+          tag: 'Grado A+ · 1 Año Garantía',
+          price: 749,
+          oldPrice: 899,
+          visualBadge: '128GB · Salud Batería 100%',
+          isRepair: false
+        },
+        {
+          id: '256gb',
+          name: 'iPhone 15 Pro · 256GB Reacondicionado (Salud 100%)',
+          tag: 'Más Vendido · Cargador 20W',
+          price: 829,
+          oldPrice: 979,
+          visualBadge: '256GB Pro · Salud Batería 100%',
+          isRepair: false
+        },
+        {
+          id: 'repair',
+          name: 'Reserva Taller · Cambio Pantalla Original OLED (En 1h)',
+          tag: 'Reparación Express · Sin Cita Previa Larga',
+          price: 119,
+          oldPrice: 149,
+          visualBadge: 'Taller Express · Pantalla OLED',
+          isRepair: true
+        }
+      ]
+    },
+    {
+      id: 'candle',
+      pillLabel: 'Vértice Studio · Hogar',
+      brandName: 'VÉRTICE STUDIO · Alta Perfumería & Hogar',
+      storeUrl: 'https://verticestudio.com',
+      badge: 'CERA BOTÁNICA DE SOJA · ALTA PERFUMERÍA ARTESANAL',
+      stockText: '● En Stock · Envío gratuito en 24h',
+      reviews: '4.9 ★ (312 reseñas verificadas)',
+      title: 'Colección Botánica Nº 04 · Ámbar & Cedro',
+      subtitle:
+        'Vaso de vidrio ámbar de botica con mecha de madera orgánica crepitante. Ficha optimizada con selector de formato que multiplica el ticket medio.',
+      optionLabel: 'Selecciona Formato o Pack Colección (Cambia el precio en vivo):',
+      variants: [
+        {
+          id: 'std',
+          name: 'Estándar · 250g (45h de combustión)',
+          tag: 'Formato Clásico',
+          price: 38,
+          oldPrice: 45,
+          visualBadge: '250g · 1 Mecha de Madera',
+          scale: 'scale-95',
+          isDual: false
+        },
+        {
+          id: 'xl',
+          name: 'Formato XL · 500g Doble Mecha (90h)',
+          tag: 'Más Vendido · Doble Mecha',
+          price: 64,
+          oldPrice: 78,
+          visualBadge: '500g XL · Doble Mecha Orgánica',
+          scale: 'scale-105',
+          isDual: false
+        },
+        {
+          id: 'pack',
+          name: 'Pack Colección · 2x250g + Cortamechas',
+          tag: 'Ahorra 18€ + Envío Gratis',
+          price: 72,
+          oldPrice: 90,
+          visualBadge: 'Cofre 2x250g + Cortamechas Acero',
+          scale: 'scale-100',
+          isDual: true
+        }
+      ]
+    },
+    {
+      id: 'clothing',
+      pillLabel: 'Nómada Club · Moda',
+      brandName: 'NÓMADA CLUB · Heavyweight Garments',
+      storeUrl: 'https://nomadaclub.es',
+      badge: 'ALGODÓN PEINADO 480 GSM · CORTE BOXY ARQUITECTÓNICO',
+      stockText: '● Drop Limitado · Envío inmediato 24h',
+      reviews: '5.0 ★ (419 reseñas verificadas)',
+      title: 'Boxy Hoodie 480gsm · Colección Studio',
+      subtitle:
+        'Sudadera de alto gramaje con caída estructurada y capucha de doble capa. Selector interactivo de tallas, tonos y packs de ahorro.',
+      optionLabel: 'Selecciona Prenda o Full Set (Cambia el precio en vivo):',
+      sizes: [
+        { label: 'S', stock: 'En stock' },
+        { label: 'M', stock: 'En stock' },
+        { label: 'L', stock: '🔥 Últimas 2 uds en talla L' },
+        { label: 'XL', stock: 'Últimas 4 uds en talla XL' }
+      ],
+      variants: [
+        {
+          id: 'hoodie',
+          name: 'Boxy Hoodie · 480gsm Heavy Cotton',
+          tag: 'Prenda Individual',
+          price: 68,
+          oldPrice: 80,
+          visualBadge: '480 GSM · Heavy Cotton',
+          isBundle: false,
+          isLimited: false
+        },
+        {
+          id: 'limited',
+          name: 'Edición Limitada · Bordado Alta Densidad',
+          tag: 'Serie Numerada',
+          price: 84,
+          oldPrice: 98,
+          visualBadge: 'Edición Limitada · Bordado 3D',
+          isBundle: false,
+          isLimited: true
+        },
+        {
+          id: 'packduo',
+          name: 'Full Studio Set · Hoodie + Jogger',
+          tag: 'Ahorra 26€ · Envío Gratis',
+          price: 119,
+          oldPrice: 145,
+          visualBadge: 'Full Studio Set · Hoodie + Jogger',
+          isBundle: true,
+          isLimited: false
+        }
+      ]
+    }
+  ];
+
+  const currentCategory = storeCategories[categoryIndex];
+  const currentVariant = currentCategory.variants[selectedVariantIdx] || currentCategory.variants[0];
+  const klarnaInstallment = Math.round(currentVariant.price / 3);
+
+  const handleNextCategory = () => {
+    setCategoryIndex((prev) => (prev + 1) % storeCategories.length);
+    setSelectedVariantIdx(0);
+    setApplePaySuccess(false);
   };
 
-  const handleSelectStore = (idx) => {
-    setStoreIndex(idx);
-    setSelectedOptionIdx(0);
-    setCheckoutSuccess(false);
+  const handlePrevCategory = () => {
+    setCategoryIndex((prev) => (prev - 1 + storeCategories.length) % storeCategories.length);
+    setSelectedVariantIdx(0);
+    setApplePaySuccess(false);
   };
 
-  const handleTriggerApplePay = () => {
-    setCheckoutSuccess(true);
-    setTimeout(() => setCheckoutSuccess(false), 2400);
+  const handleSelectCategory = (idx) => {
+    setCategoryIndex(idx);
+    setSelectedVariantIdx(0);
+    setApplePaySuccess(false);
   };
 
-  const salesNeeded = Math.max(1, Math.ceil(997 / ticketPromedio));
+  // --- 3. "DE LA IDEA A LA TIENDA" INTERACTIVE STEPPER STATE (01 to 06) ---
+  const [ideaStep, setIdeaStep] = useState(5);
+  const [autoPlayIdea, setAutoPlayIdea] = useState(true);
+  const [ideaBrand, setIdeaBrand] = useState('vertice');
+
+  const ideaToStoreSteps = [
+    {
+      num: '01',
+      code: 'STRUCTURE',
+      desc: 'Wireframe, header, grid, navegación.'
+    },
+    {
+      num: '02',
+      code: 'DESIGN',
+      desc: 'Colores, tipografía, branding.'
+    },
+    {
+      num: '03',
+      code: 'PRODUCT',
+      desc: 'Producto, galería, precio, variantes, CTA.'
+    },
+    {
+      num: '04',
+      code: 'CONVERSION',
+      desc: 'Reviews, trust, upsells, UX.'
+    },
+    {
+      num: '05',
+      code: 'DATA',
+      desc: 'Pixel, analytics, tracking, Klaviyo.'
+    },
+    {
+      num: '06',
+      code: 'READY',
+      desc: 'La tienda completa. Preparada para vender.'
+    }
+  ];
+
+  useEffect(() => {
+    if (!autoPlayIdea) return;
+    const timer = setInterval(() => {
+      setIdeaStep((prev) => (prev + 1) % ideaToStoreSteps.length);
+    }, 3600);
+    return () => clearInterval(timer);
+  }, [autoPlayIdea]);
+
+  // --- 4. ROI CALCULATOR & BUILD SYSTEM STATE ---
+  const [avgTicket, setAvgTicket] = useState(350);
+  const [monthlyVisitors, setMonthlyVisitors] = useState(1200);
+  const storeCost = 997;
+
+  const salesToBreakEven = Math.max(1, Math.ceil(storeCost / avgTicket));
+  const traditionalSales = Math.round(monthlyVisitors * 0.006);
+  const freshSales = Math.round(monthlyVisitors * 0.028);
+  const traditionalRevenue = traditionalSales * avgTicket;
+  const freshRevenue = freshSales * avgTicket;
+  const extraMonthlyRevenue = freshRevenue - traditionalRevenue;
+
+  const [activeBuildStep, setActiveBuildStep] = useState(0);
+  const [paymentPlan, setPaymentPlan] = useState('single');
+
+  const buildModules = [
+    {
+      title: '1. Arquitectura y Diseño Completo en Shopify',
+      subtitle: 'Creamos tu eCommerce desde cero con estética de marca líder.',
+      details:
+        'Más del 85% de tus clientes entran desde el móvil. Construimos una tienda ultrarrápida, limpia y pensada al milímetro para que comprar un producto o reservar cita lleve menos de 15 segundos.',
+      metrics: 'Diseño 100% responsive · Carga en < 0.8s',
+      badge: 'Core BUILD'
+    },
+    {
+      title: '2. Estructura de Catálogo, Variantes, Packs y Reservas',
+      subtitle: 'Configuramos tus productos o citas de taller para elevar el ticket medio.',
+      details:
+        'Organizamos tus colecciones, selectores de capacidad, tallas, packs ahorro o calendario de reparaciones (como has probado arriba en La Poma Lab y Vértice Studio).',
+      metrics: '+35% en valor medio por pedido gracias a packs y variantes',
+      badge: 'Catálogo & CRO'
+    },
+    {
+      title: '3. Pasarelas de Pago en 1 Clic (Pay, Tarjeta y Klarna)',
+      subtitle: 'Cobros directos a tu cuenta bancaria sin fricción.',
+      details:
+        'Activamos Shopify Payments, Apple Pay, Google Pay y pago en 3 plazos sin intereses con Klarna (tu cliente divide el pago y tú cobras el 100% al instante).',
+      metrics: 'Checkout en 1 clic · Cero formularios eternos',
+      badge: 'Pagos & Envíos'
+    },
+    {
+      title: '4. Tracking de Datos (Meta Pixel, GA4) y Klaviyo',
+      subtitle: 'Tu tienda lista para medir cada euro y recuperar carritos.',
+      details:
+        'Dejamos configurados todos los eventos de compra (ViewContent, AddToCart, InitiateCheckout, Purchase) para tus anuncios y las secuencias automáticas para recuperar carritos abandonados.',
+      metrics: 'Recupera hasta un 18% de ventas abandonadas en automático',
+      badge: 'Data & Retención'
+    },
+    {
+      title: '5. Formación Práctica 1 a 1 Grabada',
+      subtitle: 'Te enseñamos a gestionar toda tu tienda desde el móvil.',
+      details:
+        'Siguiendo la metodología de Likin Agency: al entregarte la tienda te hacemos una formación personalizada (que queda grabada para ti) donde aprendes a subir productos, cambiar precios y gestionar envíos sin depender de nadie.',
+      metrics: 'Propiedad 100% tuya · Sin cuotas mensuales de mantenimiento',
+      badge: 'Control Total'
+    }
+  ];
+
+  // --- 5. FAQ & MODAL STATE ---
+  const [openFaq, setOpenFaq] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [leadType, setLeadType] = useState('Tienda Física + Reparaciones / Stock (Ej. La Poma Lab)');
+  const [leadGoal, setLeadGoal] = useState('Crear mi eCommerce BUILD llave en mano');
+  const [leadName, setLeadName] = useState('');
+  const [leadSubmitted, setLeadSubmitted] = useState(false);
+
+  const faqs = [
+    {
+      q: '¿Cuánto tardáis en entregar la tienda lista para vender?',
+      a: 'En un máximo de 7 días (READY IN ≤ 7 DAYS*) desde que tenemos la información y materiales de tu negocio. Trabajamos con un sistema estructurado de 6 pasos sin sorpresas.'
+    },
+    {
+      q: '¿Funciona tanto para tiendas como La Poma Lab (móviles y taller) como para marcas de velas, vino o ropa?',
+      a: 'Sí. En el simulador interactivo de arriba puedes probar cómo adaptamos Shopify tanto para vender stock con pago fraccionado (Klarna / Apple Pay) como para reservar citas de taller o vender packs de producto.'
+    },
+    {
+      q: '¿Necesito saber programar para gestionar la tienda después?',
+      a: 'En absoluto. Nuestro paquete BUILD incluye una formación 1 a 1 grabada donde te enseñamos a controlar pedidos, stock y precios directamente desde la aplicación móvil de Shopify.'
+    },
+    {
+      q: '¿Cómo funcionan los acuerdos para negocios referentes en Torrent o Valencia?',
+      a: 'Si tienes un negocio físico consolidado en Torrent o Valencia con buen producto y quieres digitalizar tus ventas, consúltanos para valorar un acuerdo especial de Caso de Éxito local o intercambio estratégico.'
+    }
+  ];
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 25);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-[#05070b] text-zinc-100 selection:bg-sky-400 selection:text-black overflow-x-hidden font-sans">
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute -top-40 left-1/4 w-[550px] h-[550px] bg-sky-500/10 rounded-full blur-[150px]" />
-        <div className="absolute top-1/3 -right-40 w-[450px] h-[450px] bg-cyan-400/5 rounded-full blur-[140px]" />
-      </div>
+    <div
+      style={{
+        '--accent': accent.hex,
+        '--accent-soft': accent.hexSoft,
+        '--accent-border': accent.hexBorder,
+        '--accent-glow': accent.hexGlow,
+        '--btn-text': accent.buttonText
+      }}
+      className="min-h-screen bg-[#06080d] text-white font-sans overflow-x-hidden relative selection:bg-sky-400 selection:text-slate-950"
+    >
+      {/* Ambient Glacial Glows */}
+      <div
+        style={{ backgroundColor: accent.hexSoft }}
+        className="fixed top-0 left-1/4 w-[540px] h-[540px] rounded-full blur-[165px] pointer-events-none z-0"
+      />
+      <div className="fixed bottom-0 right-1/4 w-[480px] h-[480px] bg-sky-500/[0.04] rounded-full blur-[160px] pointer-events-none z-0" />
 
       {/* HEADER */}
-      <header className="sticky top-0 z-50 border-b border-white/[0.07] bg-[#05070b]/85 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 h-20 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-5 sm:gap-8 min-w-0">
-            <a href="#" className="text-2xl sm:text-3xl font-extrabold tracking-tighter text-white shrink-0">
-              FRESH<span className="text-sky-400">.</span>
-            </a>
+      <header
+        className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
+          isScrolled
+            ? 'bg-[#06080d]/90 backdrop-blur-xl border-b border-white/10 shadow-[0_10px_40px_rgba(0,0,0,0.6)]'
+            : 'bg-[#06080d]/70 backdrop-blur-md border-b border-white/5'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between gap-8">
+          <a
+            href="#"
+            className="text-2xl sm:text-[26px] font-black tracking-tighter flex items-center shrink-0"
+          >
+            FRESH<span className="text-[#38bdf8]">.</span>
+          </a>
+
+          <a
+            href="https://likinagency.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden md:inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-sky-400/[0.07] hover:bg-sky-400/[0.14] border border-sky-400/35 text-xs font-medium text-zinc-200 hover:text-white transition-all whitespace-nowrap shrink-0 group shadow-[0_0_25px_rgba(56,189,248,0.12)]"
+            title="Visitar web oficial de Likin Agency"
+          >
+            <Award size={14} className="text-[#38bdf8] shrink-0" />
+            <span className="whitespace-nowrap">
+              Formado en la metodología de{' '}
+              <strong className="text-white font-bold underline underline-offset-4 decoration-sky-400/70">
+                Likin Agency
+              </strong>
+            </span>
+            <ArrowUpRight
+              size={13}
+              className="text-[#38bdf8] shrink-0 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
+            />
+          </a>
+
+          <div className="hidden lg:flex items-center gap-6 shrink-0">
+            <nav className="flex items-center gap-6 text-sm font-medium text-zinc-400">
+              <a
+                href="#demo"
+                className="hover:text-white transition-colors flex items-center gap-1.5 whitespace-nowrap"
+              >
+                <Sparkles size={14} className="text-[#38bdf8]" />
+                <span>Toca y Prueba</span>
+              </a>
+              <a
+                href="#idea-to-store"
+                className="hover:text-white transition-colors whitespace-nowrap"
+              >
+                De la idea a la tienda
+              </a>
+              <a href="#proceso" className="hover:text-white transition-colors whitespace-nowrap">
+                Proceso
+              </a>
+              <a href="#precio" className="hover:text-white transition-colors whitespace-nowrap">
+                Precio
+              </a>
+            </nav>
+
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="group bg-[#38bdf8] hover:bg-sky-300 text-slate-950 px-5 py-2.5 rounded-full text-sm font-black transition-all duration-300 flex items-center gap-2 whitespace-nowrap shadow-[0_0_25px_rgba(56,189,248,0.3)]"
+            >
+              <span>Empezar Proyecto</span>
+              <ArrowRight
+                size={15}
+                className="group-hover:translate-x-0.5 transition-transform"
+              />
+            </button>
+          </div>
+
+          <button
+            className="lg:hidden text-white p-2.5 rounded-xl bg-white/5 border border-white/10"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Abrir menú"
+          >
+            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
+      </header>
+
+      {/* MOBILE MENU OVERLAY */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-40 bg-[#06080d]/98 backdrop-blur-2xl pt-24 px-6 flex flex-col gap-5 lg:hidden">
+          <a
+            href="https://likinagency.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-between px-4 py-3 rounded-2xl bg-sky-400/10 border border-sky-400/30 text-xs font-semibold text-zinc-200"
+          >
+            <span className="flex items-center gap-2">
+              <Award size={15} className="text-[#38bdf8]" />
+              Formado en la metodología de <strong className="text-white underline">Likin Agency</strong>
+            </span>
+            <ArrowUpRight size={15} className="text-[#38bdf8]" />
+          </a>
+          <a
+            href="#demo"
+            onClick={() => setMobileMenuOpen(false)}
+            className="text-xl font-bold border-b border-white/10 pb-4 flex justify-between items-center"
+          >
+            <span>Toca y Prueba (La Poma Lab / Vértice)</span>
+            <Sparkles size={18} className="text-[#38bdf8]" />
+          </a>
+          <a
+            href="#idea-to-store"
+            onClick={() => setMobileMenuOpen(false)}
+            className="text-xl font-bold border-b border-white/10 pb-4"
+          >
+            De la idea a la tienda (01 - 06)
+          </a>
+          <a
+            href="#proceso"
+            onClick={() => setMobileMenuOpen(false)}
+            className="text-xl font-bold border-b border-white/10 pb-4"
+          >
+            Proceso (≤ 7 días)
+          </a>
+          <a
+            href="#precio"
+            onClick={() => setMobileMenuOpen(false)}
+            className="text-xl font-bold border-b border-white/10 pb-4"
+          >
+            Precio BUILD (997 €)
+          </a>
+          <button
+            onClick={() => {
+              setMobileMenuOpen(false);
+              setIsModalOpen(true);
+            }}
+            className="bg-[#38bdf8] text-slate-950 px-6 py-4 mt-2 rounded-full font-black text-lg flex items-center justify-center gap-2"
+          >
+            <span>Empezar Proyecto</span>
+            <ArrowRight size={20} />
+          </button>
+        </div>
+      )}
+
+      {/* HERO SECTION & LIVE iPHONE SIMULATOR */}
+      <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 px-6 max-w-7xl mx-auto z-10">
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-10 items-center">
+          <div className="lg:col-span-7 flex flex-col items-start text-left">
             <a
               href="https://likinagency.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden md:inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-sky-400/30 bg-sky-400/[0.06] hover:bg-sky-400/[0.12] transition-all text-xs text-zinc-200 whitespace-nowrap shrink-0 group"
+              className="group inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-sky-400/40 bg-sky-400/10 text-xs sm:text-sm font-semibold text-zinc-200 mb-7 transition-all hover:border-sky-400 hover:bg-sky-400/15"
             >
-              <Award className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-              <span>
-                Formado en la metodología de{' '}
-                <strong className="font-semibold text-white underline decoration-sky-400/60 underline-offset-2">
-                  Likin Agency
-                </strong>
+              <span className="px-2 py-0.5 rounded-full bg-[#38bdf8] text-slate-950 font-black text-[11px] tracking-tight">
+                SHOPIFY BUILD
               </span>
-              <ExternalLink className="w-3 h-3 text-sky-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform shrink-0" />
-            </a>
-          </div>
-
-          <nav className="flex items-center gap-5 sm:gap-8 shrink-0">
-            <a href="#escaparate" className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-zinc-300 hover:text-sky-400 transition-colors whitespace-nowrap">
-              <Sparkles className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-              <span>Toca y Prueba</span>
-            </a>
-            <a href="#proceso" className="hidden sm:inline-block text-sm font-medium text-zinc-400 hover:text-white transition-colors whitespace-nowrap">
-              Proceso 7 Días
-            </a>
-            <a
-              href="#inversion"
-              className="px-4 sm:px-5 py-2.5 rounded-full bg-sky-400 hover:bg-sky-300 text-slate-950 font-bold text-xs sm:text-sm transition-all shadow-[0_0_25px_rgba(56,189,248,0.35)] whitespace-nowrap"
-            >
-              Crear mi eCommerce
-            </a>
-          </nav>
-        </div>
-      </header>
-
-      {/* HERO SECTION */}
-      <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 pt-12 pb-20 lg:pt-20 lg:pb-28">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
-          <div className="lg:col-span-7 space-y-7">
-            <div className="flex flex-wrap items-center gap-3">
-              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-400/10 border border-sky-400/30 text-sky-300 text-xs font-mono uppercase tracking-wider">
-                <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
-                READY IN ≤ 7 DAYS · SHOPIFY EXPERT
+              <span>Metodología de conversión validada por</span>
+              <span className="text-white font-extrabold underline underline-offset-4 decoration-sky-400 flex items-center gap-0.5">
+                Likin Agency
+                <ArrowUpRight
+                  size={14}
+                  className="text-[#38bdf8] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
+                />
               </span>
-              <a
-                href="https://likinagency.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="md:hidden inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/15 bg-white/[0.03] text-xs text-zinc-300"
+            </a>
+
+            <h1 className="text-4xl sm:text-6xl lg:text-[66px] font-black tracking-tight leading-[1.12] mb-6">
+              <span className="block py-0.5 text-white">Creamos tu eCommerce.</span>
+              <span
+                style={{ backgroundImage: accent.gradientText }}
+                className="inline-block py-1 pb-2 text-transparent bg-clip-text"
               >
-                <Award className="w-3.5 h-3.5 text-sky-400" />
-                <span>Estándar Likin Agency ↗</span>
-              </a>
-            </div>
-
-            <h1 className="text-4xl sm:text-6xl lg:text-[68px] font-extrabold tracking-tight leading-[1.09] py-1">
-              Creamos tu eCommerce.
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-sky-200 to-sky-400 pb-2">
                 Tú lo escalas.
               </span>
             </h1>
 
-            <p className="text-base sm:text-xl text-zinc-400 max-w-2xl leading-relaxed">
-              No diseñamos simples páginas web. Construimos infraestructuras <strong className="text-zinc-200">Shopify</strong> preparadas para vender productos físicos y reservar servicios en piloto automático desde el primer día.
+            <p className="text-base sm:text-xl text-zinc-400 max-w-2xl mb-9 font-normal leading-relaxed">
+              Diseñamos e implementamos tiendas{' '}
+              <span className="text-white font-semibold">Shopify</span> preparadas para vender desde el
+              primer día. Sin plantillas lentas, listas en{' '}
+              <span className="text-[#38bdf8] font-bold">≤ 7 días</span> y con formación incluida para que
+              tengas el control total.
             </p>
 
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4 pt-2">
-              <a
-                href="#escaparate"
-                className="inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-full bg-sky-400 hover:bg-sky-300 text-slate-950 font-extrabold text-base transition-all shadow-[0_0_35px_rgba(56,189,248,0.4)]"
+            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto mb-11">
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="group flex items-center justify-center gap-3 bg-[#38bdf8] hover:bg-sky-300 text-slate-950 px-8 py-4 rounded-full font-black text-base sm:text-lg transition-all hover:scale-[1.02] active:scale-95 shadow-[0_0_40px_rgba(56,189,248,0.3)]"
               >
+                <span>Crear mi eCommerce (BUILD)</span>
+                <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+              </button>
+              <a
+                href="#demo"
+                className="flex items-center justify-center gap-2.5 bg-[#0b0f17] hover:bg-zinc-900 text-white border border-white/15 px-7 py-4 rounded-full font-bold text-base transition-all"
+              >
+                <Eye size={18} className="text-[#38bdf8]" />
                 <span>Probar Demo Interactiva</span>
-                <ArrowRight className="w-4 h-4" />
-              </a>
-              <a
-                href="#inversion"
-                className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full border border-white/15 bg-white/[0.03] hover:bg-white/[0.08] text-white font-semibold text-base transition-all"
-              >
-                <span>Ver Paquete BUILD · 997 €</span>
               </a>
             </div>
 
-            <div className="pt-4 grid grid-cols-3 gap-4 border-t border-white/10 max-w-xl">
+            <div className="grid grid-cols-3 gap-4 sm:gap-8 pt-6 border-t border-white/10 w-full max-w-xl">
               <div>
-                <p className="text-2xl sm:text-3xl font-extrabold text-white">≤ 7 días</p>
-                <p className="text-xs text-zinc-400 mt-0.5">Entrega llave en mano</p>
+                <div className="text-2xl sm:text-3xl font-black tracking-tight text-white">≤ 7 días</div>
+                <div className="text-xs text-zinc-500 mt-0.5">Entrega llave en mano</div>
               </div>
               <div>
-                <p className="text-2xl sm:text-3xl font-extrabold text-sky-400">1-Clic</p>
-                <p className="text-xs text-zinc-400 mt-0.5">Apple Pay & Klarna nativo</p>
+                <div className="text-2xl sm:text-3xl font-black tracking-tight text-[#38bdf8]">
+                  1-Clic
+                </div>
+                <div className="text-xs text-zinc-500 mt-0.5">Pay, Google Pay & Klarna</div>
               </div>
               <div>
-                <p className="text-2xl sm:text-3xl font-extrabold text-white">100%</p>
-                <p className="text-xs text-zinc-400 mt-0.5">Autogestionable por ti</p>
+                <div className="text-2xl sm:text-3xl font-black tracking-tight text-white">100% Tuya</div>
+                <div className="text-xs text-zinc-500 mt-0.5">Formación 1 a 1 incluida</div>
               </div>
             </div>
           </div>
 
-          {/* SIMULADOR EN VIVO */}
-          <div className="lg:col-span-5">
-            <div className="relative mx-auto max-w-md rounded-3xl border border-white/15 bg-gradient-to-b from-zinc-900/90 to-[#070a10] p-6 shadow-2xl">
-              <div className="flex items-center justify-between pb-4 mb-5 border-b border-white/10">
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-sky-400 animate-ping" />
-                  <span className="text-xs font-mono uppercase tracking-wider text-sky-300">
-                    TU MÓVIL CON SHOPIFY ACTIVO
-                  </span>
+          <div className="lg:col-span-5 flex flex-col items-center">
+            <div className="w-full max-w-[410px] bg-gradient-to-b from-sky-400/25 via-zinc-800/40 to-zinc-950 p-1.5 rounded-[42px] border border-sky-400/30 shadow-[0_25px_90px_rgba(56,189,248,0.2)]">
+              <div className="bg-[#090d16] rounded-[36px] p-5 sm:p-6 border border-white/5 relative overflow-hidden">
+                <div className="w-32 h-6 bg-black rounded-full mx-auto mb-5 flex items-center justify-between px-3 border border-white/10">
+                  <span className="w-2 h-2 rounded-full bg-[#38bdf8] animate-pulse" />
+                  <span className="text-[10px] font-mono text-zinc-300 tracking-wider">LA POMA LAB</span>
                 </div>
-                <button
-                  onClick={handleSimulateSale}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-sky-400 hover:bg-sky-300 text-slate-950 font-bold text-xs transition-all cursor-pointer active:scale-95 shadow-[0_0_20px_rgba(56,189,248,0.35)]"
-                >
-                  <Zap className="w-3.5 h-3.5 fill-current" />
-                  <span>¡Simular Venta!</span>
-                </button>
-              </div>
 
-              <div className="grid grid-cols-2 gap-3 mb-5">
-                <div className="rounded-2xl bg-white/[0.03] border border-white/[0.08] p-3.5">
-                  <span className="text-[11px] font-mono uppercase text-zinc-400">Facturación Hoy</span>
-                  <p className="text-2xl font-extrabold text-white mt-1">
-                    {revenueToday.toLocaleString('es-ES')} €
-                  </p>
-                </div>
-                <div className="rounded-2xl bg-white/[0.03] border border-white/[0.08] p-3.5">
-                  <span className="text-[11px] font-mono uppercase text-zinc-400">Pedidos / Citas</span>
-                  <p className="text-2xl font-extrabold text-sky-400 mt-1">{salesCount} completados</p>
-                </div>
-              </div>
+                <div className="bg-[#0b0f17] border border-white/10 rounded-2xl p-4 mb-4">
+                  <div className="flex items-center justify-between gap-2 mb-3">
+                    <div>
+                      <div className="text-[11px] uppercase tracking-wider text-zinc-400 font-semibold">
+                        Facturación Hoy (En Vivo)
+                      </div>
+                      <div className="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-2 mt-0.5">
+                        <span>{simulatedRevenue.toLocaleString('es-ES')},00 €</span>
+                        <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-sky-400/15 text-[#38bdf8]">
+                          +34%
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setIsSimulatingSales(!isSimulatingSales)}
+                      className={`px-2.5 py-1 rounded-full text-[10px] font-bold border transition-all ${
+                        isSimulatingSales
+                          ? 'bg-sky-400/15 text-[#38bdf8] border-sky-400/40'
+                          : 'bg-zinc-900 text-zinc-400 border-white/10'
+                      }`}
+                    >
+                      {isSimulatingSales ? '● Auto ON' : '○ Pausado'}
+                    </button>
+                  </div>
 
-              <div className="space-y-2.5">
-                {notifications.map((item, idx) => (
-                  <div
-                    key={item.id}
-                    className={`rounded-2xl p-3.5 border transition-all ${
-                      idx === 0
-                        ? 'bg-sky-400/[0.09] border-sky-400/40 shadow-[0_0_25px_rgba(56,189,248,0.12)]'
-                        : 'bg-white/[0.03] border-white/07 opacity-80'
+                  <button
+                    onClick={() => triggerManualSale()}
+                    className={`w-full bg-[#38bdf8] hover:bg-sky-300 text-slate-950 text-xs sm:text-sm font-black py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-[0_0_25px_rgba(56,189,248,0.35)] active:scale-95 ${
+                      pulseButton ? 'scale-[1.03] ring-4 ring-sky-400/40' : ''
                     }`}
                   >
-                    <div className="flex items-center justify-between text-xs mb-1">
-                      <span className="font-bold text-sky-300 flex items-center gap-1.5">
-                        <ShoppingBag className="w-3.5 h-3.5" />
-                        {item.store}
-                      </span>
-                      <span className="text-zinc-500 font-mono text-[11px]">{item.time}</span>
+                    <Zap size={15} className="fill-slate-950" />
+                    <span>⚡ ¡Simular Venta en Vivo!</span>
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-between px-1 mb-2.5 text-[11px] text-zinc-400">
+                  <span className="flex items-center gap-1.5 font-medium">
+                    <Bell size={12} className="text-[#38bdf8]" />
+                    Notificaciones en tiempo real
+                  </span>
+                  <span className="font-mono text-[10px] text-sky-400">Shopify iOS App</span>
+                </div>
+
+                <div className="space-y-2.5 min-h-[280px]">
+                  {notifications.map((item, idx) => (
+                    <div
+                      key={item.id}
+                      className={`p-3.5 rounded-2xl border transition-all duration-500 ${
+                        idx === 0
+                          ? 'bg-[#0f1624] border-sky-400/50 shadow-[0_0_25px_rgba(56,189,248,0.16)] scale-[1.01]'
+                          : 'bg-[#0b0f17]/80 border-white/5 opacity-85'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex items-start gap-2.5">
+                          <div className="w-9 h-9 rounded-xl bg-sky-400/15 text-[#38bdf8] flex items-center justify-center shrink-0 mt-0.5">
+                            {item.type === 'order' ? (
+                              <ShoppingBag size={17} />
+                            ) : (
+                              <Calendar size={17} />
+                            )}
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-sky-400/15 text-[#38bdf8]">
+                                {item.store}
+                              </span>
+                              <span className="text-[10px] text-zinc-500">{item.time}</span>
+                            </div>
+                            <div className="text-xs font-bold text-white mt-1 leading-snug">
+                              {item.title}
+                            </div>
+                            <p className="text-[11px] text-zinc-400 line-clamp-1 mt-0.5">{item.desc}</p>
+                          </div>
+                        </div>
+                        <div className="text-right shrink-0">
+                          <div className="text-sm font-black text-[#38bdf8]">+{item.amount},00 €</div>
+                        </div>
+                      </div>
+                      <div className="mt-2 pt-2 border-t border-white/5 flex items-center justify-between text-[10px] text-zinc-400">
+                        <span className="px-2 py-0.5 rounded bg-white/5 text-zinc-300 font-medium">
+                          {item.badge}
+                        </span>
+                        <span>Stock sincronizado ✓</span>
+                      </div>
                     </div>
-                    <p className="text-xs sm:text-sm font-medium text-zinc-100">{item.text}</p>
-                  </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* INTERACTIVE STORE SHOWCASE */}
+      <section id="demo" className="py-24 px-6 bg-[#0b0f17] border-y border-white/10">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-8 gap-6">
+            <div>
+              <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#38bdf8] mb-3">
+                <MousePointerClick size={15} />
+                <span>Experiencia de Compra Interactiva</span>
+              </div>
+              <h2 className="text-3xl sm:text-5xl font-black tracking-tight">
+                Toca y prueba cómo compran tus clientes.
+              </h2>
+              <p className="text-zinc-400 mt-2 max-w-2xl text-base sm:text-lg">
+                Cambia acabados, capacidades o tallas para ver cómo se actualiza el precio al instante, y
+                pulsa la <strong className="text-[#38bdf8]">flecha derecha (→)</strong> para explorar{' '}
+                <strong className="text-white">La Poma Lab</strong>,{' '}
+                <strong className="text-white">Vértice Studio</strong> y{' '}
+                <strong className="text-white">Nómada Club</strong>.
+              </p>
+            </div>
+
+            <div className="bg-[#06080d] p-1.5 rounded-2xl border border-white/10 flex items-center self-start shrink-0">
+              <button
+                onClick={() => setComparisonMode('boring')}
+                className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 ${
+                  comparisonMode === 'boring'
+                    ? 'bg-red-500/20 text-red-300 border border-red-500/40'
+                    : 'text-zinc-400 hover:text-white'
+                }`}
+              >
+                <AlertCircle size={15} />
+                <span>❌ Web Tradicional (No convierte)</span>
+              </button>
+              <button
+                onClick={() => setComparisonMode('fresh')}
+                className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-black transition-all flex items-center gap-2 ${
+                  comparisonMode === 'fresh'
+                    ? 'bg-[#38bdf8] text-slate-950 shadow-[0_0_20px_rgba(56,189,248,0.3)]'
+                    : 'text-zinc-400 hover:text-white'
+                }`}
+              >
+                <Zap size={15} />
+                <span>⚡ Tienda FRESH (Shopify)</span>
+              </button>
+            </div>
+          </div>
+
+          {comparisonMode === 'fresh' && (
+            <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+              <div className="flex flex-wrap items-center gap-2.5">
+                {storeCategories.map((cat, idx) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => handleSelectCategory(idx)}
+                    className={`px-4 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all flex items-center gap-2 ${
+                      categoryIndex === idx
+                        ? 'bg-[#38bdf8] text-slate-950 font-black shadow-[0_0_20px_rgba(56,189,248,0.25)]'
+                        : 'bg-[#06080d] text-zinc-400 border border-white/10 hover:text-white'
+                    }`}
+                  >
+                    {cat.id === 'tech' && <Smartphone size={15} />}
+                    {cat.id === 'candle' && <Flame size={15} />}
+                    {cat.id === 'clothing' && <Shirt size={15} />}
+                    <span>{cat.pillLabel}</span>
+                  </button>
                 ))}
               </div>
 
-              <p className="text-[11px] text-center text-zinc-500 mt-4">
-                Toca <strong className="text-zinc-300">«¡Simular Venta!»</strong> para ver cómo entran los pedidos en directo.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ESCAPARATE INTERACTIVO */}
-      <section id="escaparate" className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 py-20 border-t border-white/10">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
-          <div>
-            <span className="text-xs font-mono uppercase tracking-widest text-sky-400">
-              DEMO INTERACTIVA EN VIVO
-            </span>
-            <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight mt-2">
-              Toca y prueba cómo compran tus clientes.
-            </h2>
-          </div>
-
-          <div className="inline-flex rounded-full p-1 bg-zinc-900 border border-white/10 self-start">
-            <button
-              onClick={() => setStoreMode('old')}
-              className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                storeMode === 'old'
-                  ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
-                  : 'text-zinc-400 hover:text-white'
-              }`}
-            >
-              ❌ Web Tradicional (No vende)
-            </button>
-            <button
-              onClick={() => setStoreMode('fresh')}
-              className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                storeMode === 'fresh'
-                  ? 'bg-sky-400 text-slate-950 shadow-[0_0_20px_rgba(56,189,248,0.35)]'
-                  : 'text-zinc-400 hover:text-white'
-              }`}
-            >
-              ⚡ Tienda FRESH (Shopify)
-            </button>
-          </div>
-        </div>
-
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-          <div className="flex flex-wrap items-center gap-2">
-            {STORES.map((st, idx) => (
               <button
-                key={st.id}
-                onClick={() => handleSelectStore(idx)}
-                className={`px-4 py-2 rounded-full text-xs font-bold border transition-all cursor-pointer ${
-                  storeIndex === idx
-                    ? 'bg-sky-400/15 border-sky-400 text-sky-300'
-                    : 'bg-white/[0.02] border-white/10 text-zinc-400 hover:text-white'
-                }`}
+                onClick={handleNextCategory}
+                className="text-xs font-bold flex items-center gap-1.5 bg-sky-400/10 hover:bg-sky-400/20 text-[#38bdf8] border border-sky-400/35 px-4 py-2 rounded-full transition-all"
               >
-                {st.brand} · <span className="font-normal opacity-80">{st.category}</span>
+                <span>
+                  Siguiente Tienda ({storeCategories[(categoryIndex + 1) % storeCategories.length].pillLabel})
+                </span>
+                <ChevronRight size={15} />
               </button>
-            ))}
-          </div>
+            </div>
+          )}
 
-          <button
-            onClick={handleNextStore}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.05] hover:bg-sky-400/20 border border-white/15 hover:border-sky-400/50 text-xs font-bold text-sky-300 transition-all cursor-pointer"
-          >
-            <span>Siguiente Tienda</span>
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-
-        {storeMode === 'old' ? (
-          <div className="rounded-3xl border border-rose-500/30 bg-zinc-950 p-8 sm:p-12 text-center space-y-5">
-            <p className="text-xs font-mono uppercase tracking-widest text-rose-400">
-              EL PROBLEMA DEL 90% DE LOS NEGOCIOS LOCALES
-            </p>
-            <h3 className="text-2xl sm:text-3xl font-bold text-white max-w-2xl mx-auto">
-              «Rellena este formulario y te responderemos en 24-48 horas...»
-            </h3>
-            <p className="text-zinc-400 max-w-xl mx-auto text-sm sm:text-base">
-              Cuando un cliente quiere comprar un producto o reservar una cita urgente, no quiere rellenar formularios ni llamar por teléfono. Si no puede pagar en 15 segundos con su teléfono, se va con otro negocio.
-            </p>
-            <button
-              onClick={() => setStoreMode('fresh')}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-sky-400 text-slate-950 font-bold text-sm cursor-pointer"
-            >
-              <span>Ver cómo lo resuelve FRESH en 1 clic</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          </div>
-        ) : (
-          <div className="relative rounded-3xl border border-white/15 bg-gradient-to-b from-[#0b101b] to-[#070a10] overflow-hidden shadow-2xl">
-            <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/10 bg-black/40">
+          <div className="relative rounded-3xl border border-white/15 bg-[#06080d] overflow-hidden shadow-[0_25px_100px_rgba(0,0,0,0.85)]">
+            <div className="bg-[#0b0f17] border-b border-white/10 px-5 py-3.5 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full bg-zinc-700" />
-                <span className="w-3 h-3 rounded-full bg-zinc-700" />
-                <span className="w-3 h-3 rounded-full bg-zinc-700" />
+                <span className="w-3 h-3 rounded-full bg-red-500/70" />
+                <span className="w-3 h-3 rounded-full bg-amber-500/70" />
+                <span className="w-3 h-3 rounded-full bg-sky-400/70" />
               </div>
-              <div className="px-4 py-1 rounded-full bg-white/[0.04] border border-white/10 text-xs font-mono text-zinc-300 flex items-center gap-1.5">
-                <Lock className="w-3 h-3 text-sky-400" />
-                <span>{currentStore.domain}</span>
+              <div className="bg-black/60 border border-white/10 rounded-lg px-4 py-1 text-xs text-zinc-300 flex items-center gap-2 font-mono">
+                <Lock size={11} className="text-[#38bdf8]" />
+                <span>
+                  {comparisonMode === 'boring'
+                    ? 'http://www.web-antigua-sin-tienda.es/presupuesto.php'
+                    : currentCategory.storeUrl}
+                </span>
               </div>
-              <div className="text-xs font-bold tracking-wider uppercase text-zinc-400">
-                {currentStore.brand}
+              <div className="text-xs font-mono text-[#38bdf8] hidden sm:block">
+                {comparisonMode === 'boring' ? 'Carga: 6.8s · Sin Checkout' : 'Shopify OS 2.0 · 0.6s ⚡'}
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 relative">
-              <div className="lg:col-span-5 p-8 sm:p-10 flex flex-col items-center justify-center bg-gradient-to-b from-sky-400/[0.05] to-transparent border-b lg:border-b-0 lg:border-r border-white/10 relative">
-                <span className="text-[11px] font-mono uppercase tracking-widest text-sky-300 px-3 py-1 rounded-full bg-sky-400/10 border border-sky-400/25 mb-6 text-center">
-                  {currentStore.badge}
-                </span>
-
-                {currentStore.id === 'poma' && (
-                  <div className="my-4 flex flex-col items-center">
-                    <div
-                      className="w-44 h-80 rounded-[36px] border-4 p-3 flex flex-col justify-between shadow-2xl transition-colors duration-300 relative"
-                      style={{
-                        borderColor:
-                          selectedColor === 'blue'
-                            ? '#38bdf8'
-                            : selectedColor === 'natural'
-                            ? '#a8a29e'
-                            : '#52525b',
-                        background:
-                          'linear-gradient(160deg, rgba(30,41,59,0.95) 0%, rgba(9,13,22,0.98) 100%)'
-                      }}
-                    >
-                      <div className="w-16 h-4 rounded-full bg-black mx-auto flex items-center justify-end px-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-sky-400/70" />
-                      </div>
-                      <div className="text-center space-y-2 my-auto">
-                        <Smartphone className="w-10 h-10 text-sky-400 mx-auto" />
-                        <p className="text-xs font-bold text-white tracking-tight">LA POMA LAB</p>
-                        <p className="text-[11px] text-sky-300 font-mono">
-                          {currentOption.isRepair ? 'TALLER EXPRESS 60m' : 'SALUD BATERÍA 100%'}
-                        </p>
-                      </div>
-                      <div className="w-20 h-1 rounded-full bg-white/30 mx-auto" />
-                    </div>
-
-                    <div className="flex items-center gap-2.5 mt-5">
-                      {currentStore.colors.map(c => (
-                        <button
-                          key={c.id}
-                          onClick={() => setSelectedColor(c.id)}
-                          className={`px-3 py-1 rounded-full text-xs border transition-all cursor-pointer flex items-center gap-1.5 ${
-                            selectedColor === c.id
-                              ? 'border-sky-400 bg-sky-400/15 text-white font-semibold'
-                              : 'border-white/10 bg-white/[0.02] text-zinc-400'
-                          }`}
-                        >
-                          <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: c.hex }} />
-                          <span>{c.name}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {currentStore.id === 'vertice' && (
-                  <div className="my-6 flex flex-col items-center">
-                    <div className="relative flex items-end justify-center gap-3 h-64">
-                      <div className="relative flex flex-col items-center">
-                        <div className="flex gap-3 mb-1">
-                          <div className="w-3 h-6 rounded-full bg-gradient-to-t from-amber-500 via-amber-300 to-white animate-pulse shadow-[0_0_20px_#f59e0b]" />
-                          {currentOption.flames === 2 && (
-                            <div className="w-3 h-6 rounded-full bg-gradient-to-t from-amber-500 via-amber-300 to-white animate-pulse shadow-[0_0_20px_#f59e0b]" />
-                          )}
-                        </div>
-                        <div className="w-36 h-44 rounded-b-2xl rounded-t-md border-2 border-amber-500/40 bg-gradient-to-b from-amber-900/50 to-stone-950 p-4 flex flex-col justify-center items-center shadow-2xl">
-                          <div className="w-full py-3 px-2 bg-[#f5f2eb] text-stone-900 rounded text-center shadow">
-                            <p className="text-[10px] font-mono tracking-widest uppercase">VÉRTICE</p>
-                            <p className="text-xs font-extrabold mt-0.5">N°04 SANTAL</p>
-                            <p className="text-[9px] text-stone-600 mt-0.5">VALENCIA · SOJA ORGÁNICA</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {currentOption.isPack && (
-                        <div className="w-24 h-32 rounded-b-xl rounded-t border border-amber-500/30 bg-gradient-to-b from-amber-950/60 to-stone-950 p-2 flex items-center justify-center">
-                          <div className="w-full py-2 bg-[#f5f2eb] text-stone-900 rounded text-center">
-                            <p className="text-[8px] font-bold">PACK RITUAL</p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {currentStore.id === 'nomada' && (
-                  <div className="my-4 flex flex-col items-center">
-                    <svg viewBox="0 0 220 200" className="w-56 h-52 drop-shadow-2xl">
-                      <path
-                        d="M70 30 Q110 15 150 30 L195 65 L175 100 L155 85 L155 180 L65 180 L65 85 L45 100 L25 65 Z"
-                        fill="#18181b"
-                        stroke="#38bdf8"
-                        strokeWidth="2.5"
-                      />
-                      <path d="M85 30 Q110 55 135 30" fill="none" stroke="#52525b" strokeWidth="2" />
-                      <rect x="82" y="125" width="56" height="32" rx="6" fill="#27272a" stroke="#3f3f46" />
-                      <text x="110" y="92" textAnchor="middle" fill="#f4f4f5" fontSize="11" fontWeight="bold" letterSpacing="2">
-                        NÓMADA · {selectedSize}
-                      </text>
-                    </svg>
-
-                    <div className="flex items-center gap-2 mt-4">
-                      <span className="text-xs text-zinc-400 mr-1">Talla:</span>
-                      {currentStore.sizes.map(sz => (
-                        <button
-                          key={sz}
-                          onClick={() => setSelectedSize(sz)}
-                          className={`w-9 h-9 rounded-xl font-bold text-xs border transition-all cursor-pointer ${
-                            selectedSize === sz
-                              ? 'bg-sky-400 text-slate-950 border-sky-400 shadow-[0_0_15px_rgba(56,189,248,0.4)]'
-                              : 'bg-white/[0.03] border-white/10 text-zinc-300 hover:border-white/30'
-                          }`}
-                        >
-                          {sz}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div className="lg:col-span-7 p-7 sm:p-10 lg:pr-20 flex flex-col justify-between space-y-6">
-                <div>
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs font-mono uppercase tracking-wider text-sky-400">
-                      {currentStore.brand}
-                    </span>
-                    <div className="flex items-center gap-1 text-xs text-amber-400">
-                      <Star className="w-3.5 h-3.5 fill-current" />
-                      <span className="font-bold text-white">{currentStore.rating}</span>
-                      <span className="text-zinc-400">({currentStore.reviews})</span>
-                    </div>
-                  </div>
-
-                  <h3 className="text-2xl sm:text-3xl font-extrabold text-white mt-1.5">
-                    {currentStore.title}
-                  </h3>
-
-                  <div className="flex items-baseline gap-3 mt-4">
-                    <span className="text-3xl sm:text-4xl font-extrabold text-white">
-                      {currentOption.price} €
-                    </span>
-                    <span className="text-lg text-zinc-500 line-through">
-                      {currentOption.oldPrice} €
-                    </span>
-                    <span className="px-2.5 py-0.5 rounded-full bg-sky-400/15 border border-sky-400/30 text-sky-300 text-xs font-bold">
-                      Ahorras {currentOption.oldPrice - currentOption.price} €
-                    </span>
-                  </div>
-                  <p className="text-xs text-zinc-400 mt-1">
-                    o 3 plazos sin intereses de <strong className="text-zinc-200">{(currentOption.price / 3).toFixed(2)} €</strong> con Klarna
-                  </p>
-                </div>
-
-                <div className="space-y-2.5">
-                  <label className="block text-xs font-mono uppercase tracking-wider text-zinc-400">
-                    {currentStore.optionsLabel}
-                  </label>
-                  {currentStore.options.map((opt, idx) => (
-                    <button
-                      key={opt.id}
-                      onClick={() => setSelectedOptionIdx(idx)}
-                      className={`w-full p-3.5 rounded-2xl border text-left transition-all flex items-center justify-between gap-3 cursor-pointer ${
-                        selectedOptionIdx === idx
-                          ? 'bg-sky-400/10 border-sky-400 shadow-[0_0_20px_rgba(56,189,248,0.15)]'
-                          : 'bg-white/[0.02] border-white/10 hover:border-white/25'
-                      }`}
-                    >
-                      <div className="flex items-center gap-3 min-w-0">
-                        <div
-                          className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ${
-                            selectedOptionIdx === idx
-                              ? 'border-sky-400 bg-sky-400 text-slate-950'
-                              : 'border-zinc-500'
-                          }`}
-                        >
-                          {selectedOptionIdx === idx && <Check className="w-3 h-3 stroke-[3]" />}
-                        </div>
-                        <span className="text-xs sm:text-sm font-semibold text-white truncate">
-                          {opt.name}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2 shrink-0">
-                        <span className="hidden sm:inline-block px-2 py-0.5 rounded-md bg-white/[0.06] text-[10px] font-mono text-sky-300">
-                          {opt.tag}
-                        </span>
-                        <span className="text-sm font-extrabold text-white">{opt.price} €</span>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-
-                {currentStore.id === 'poma' && currentOption.isRepair && (
-                  <div className="p-3.5 rounded-2xl bg-sky-400/[0.07] border border-sky-400/30 space-y-2">
-                    <div className="flex items-center gap-1.5 text-xs font-bold text-sky-300">
-                      <Calendar className="w-3.5 h-3.5" />
-                      <span>Elige hora de entrada en taller (Torrent):</span>
-                    </div>
-                    <div className="grid grid-cols-3 gap-2">
-                      {currentStore.slots.map(slot => (
-                        <button
-                          key={slot}
-                          onClick={() => setSelectedSlot(slot)}
-                          className={`py-2 px-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                            selectedSlot === slot
-                              ? 'bg-sky-400 text-slate-950 border-sky-400'
-                              : 'bg-black/40 border-white/10 text-zinc-300'
-                          }`}
-                        >
-                          {slot}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                <div className="pt-1">
-                  <button
-                    onClick={handleTriggerApplePay}
-                    className="w-full py-4 px-6 rounded-2xl bg-white hover:bg-zinc-100 text-black font-extrabold text-base transition-all flex items-center justify-center gap-2 shadow-xl cursor-pointer active:scale-[0.99]"
-                  >
-                    {checkoutSuccess ? (
-                      <>
-                        <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-                        <span>¡Pedido Confirmado en 1 Clic! ({currentOption.price} €)</span>
-                      </>
-                    ) : (
-                      <>
-                        <span>
-                          {currentOption.isRepair
-                            ? `Reservar Cita con Pay · ${currentOption.price} €`
-                            : `Comprar en 1 clic con Pay · ${currentOption.price} €`}
-                        </span>
-                      </>
-                    )}
-                  </button>
-                </div>
-
-                <button
-                  onClick={handleNextStore}
-                  title="Ver siguiente ejemplo de tienda"
-                  className="hidden lg:flex absolute right-0 top-0 bottom-0 w-14 border-l border-white/10 bg-white/[0.02] hover:bg-sky-400/15 transition-all flex-col items-center justify-center gap-3 group cursor-pointer"
-                >
-                  <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400 group-hover:text-sky-300 [writing-mode:vertical-rl] rotate-180">
-                    Siguiente Tienda
+            {comparisonMode === 'boring' ? (
+              <div className="p-8 md:p-14 bg-zinc-950 text-zinc-300 flex flex-col items-center text-center">
+                <div className="max-w-2xl w-full bg-[#0b0f17] border border-red-500/30 rounded-3xl p-6 sm:p-10">
+                  <span className="px-3 py-1 rounded-full bg-red-500/20 text-red-300 text-xs font-bold uppercase tracking-wider">
+                    ❌ ASÍ PIERDEN VENTAS LOS NEGOCIOS TRADICIONALES
                   </span>
-                  <div className="w-8 h-8 rounded-full bg-sky-400/20 border border-sky-400/40 flex items-center justify-center text-sky-300 group-hover:translate-x-0.5 transition-transform">
-                    <ChevronRight className="w-4 h-4" />
+                  <h3 className="text-2xl sm:text-3xl font-black text-white mt-4 mb-2">
+                    "Pide presupuesto y te responderemos en 48-72h laborables"
+                  </h3>
+                  <p className="text-sm text-zinc-400 mb-6">
+                    Cuando un cliente quiere comprar un iPhone reacondicionado, reservar un cambio de pantalla
+                    o pedir una vela para regalo, <strong className="text-white">no quiere rellenar 6 campos y esperar 3 días</strong>.
+                  </p>
+                  <div className="grid sm:grid-cols-2 gap-3 text-left opacity-65 pointer-events-none mb-6">
+                    <div className="h-10 bg-zinc-900 border border-zinc-700 rounded-lg px-3 flex items-center text-xs text-zinc-500">
+                      1. Nombre y Apellidos (Obligatorio)*
+                    </div>
+                    <div className="h-10 bg-zinc-900 border border-zinc-700 rounded-lg px-3 flex items-center text-xs text-zinc-500">
+                      2. Correo electrónico*
+                    </div>
+                    <div className="h-10 bg-zinc-900 border border-zinc-700 rounded-lg px-3 flex items-center text-xs text-zinc-500">
+                      3. Teléfono de contacto*
+                    </div>
+                    <div className="h-10 bg-zinc-900 border border-zinc-700 rounded-lg px-3 flex items-center text-xs text-zinc-500">
+                      4. Modelo o producto que buscas*
+                    </div>
+                    <div className="h-10 bg-zinc-900 border border-zinc-700 rounded-lg px-3 flex items-center text-xs text-zinc-500 sm:col-span-2">
+                      5. Asunto de tu solicitud*
+                    </div>
+                    <div className="h-20 bg-zinc-900 border border-zinc-700 rounded-lg p-3 text-xs text-zinc-500 sm:col-span-2">
+                      6. Escribe detalladamente tu consulta y un comercial te llamará...
+                    </div>
                   </div>
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-      </section>
-
-      {/* DE LA IDEA A LA TIENDA (01 A 06) */}
-      <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 py-24 border-t border-white/10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          <div className="lg:col-span-5 space-y-6">
-            <div>
-              <span className="text-xs font-mono uppercase tracking-widest text-zinc-400">
-                FROM IDEA TO ECOMMERCE
-              </span>
-              <h2 className="text-4xl sm:text-5xl font-extrabold tracking-tight mt-2 leading-tight">
-                De la idea
-                <span className="block text-zinc-500">a la tienda.</span>
-              </h2>
-            </div>
-
-            <div className="divide-y divide-white/10 border-t border-b border-white/10">
-              {BUILD_STEPS.map((st, idx) => {
-                const isActive = activeBuildStep === idx;
-                return (
                   <button
-                    key={st.num}
-                    onClick={() => setActiveBuildStep(idx)}
-                    className={`w-full py-3.5 px-3 text-left transition-all flex items-start gap-5 cursor-pointer ${
-                      isActive ? 'bg-sky-400/[0.07]' : 'hover:bg-white/[0.02]'
-                    }`}
+                    onClick={() => setComparisonMode('fresh')}
+                    className="w-full bg-[#38bdf8] hover:bg-sky-300 text-slate-950 font-black py-4 rounded-xl transition-all flex items-center justify-center gap-2"
                   >
-                    <span className={`text-xs font-mono mt-0.5 ${isActive ? 'text-sky-400 font-bold' : 'text-zinc-500'}`}>
-                      {st.num}
-                    </span>
-                    <div>
-                      <p className={`text-xs font-mono uppercase tracking-wider ${isActive ? 'text-white font-bold' : 'text-zinc-300'}`}>
-                        {st.code}
-                      </p>
-                      <p className="text-xs text-zinc-400 mt-0.5">{st.desc}</p>
-                    </div>
+                    <Zap size={18} />
+                    <span>Cambiar a Tienda FRESH con Pago y Reserva en 1 Clic →</span>
                   </button>
-                );
-              })}
-            </div>
-
-            <p className="text-[11px] text-zinc-500">
-              Haz clic en cada fase para inspeccionar cómo estructuramos la arquitectura de ventas.
-            </p>
-          </div>
-
-          <div className="lg:col-span-7 relative flex items-center justify-center">
-            <div className="w-full max-w-xl rounded-2xl border border-white/15 bg-[#0c1017] overflow-hidden shadow-2xl relative">
-              <div className="px-4 py-2.5 bg-zinc-900 flex items-center justify-between border-b border-white/10">
-                <div className="flex gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
                 </div>
-                <span className="text-[11px] font-mono text-zinc-400">VERTICESTUDIO.COM</span>
-                <span className="text-[10px] font-mono text-sky-400">
-                  PASO {BUILD_STEPS[activeBuildStep].num}
-                </span>
               </div>
-
-              <div
-                className={`py-1.5 text-center text-[10px] font-medium transition-colors ${
-                  activeBuildStep === 0
-                    ? 'bg-zinc-800 text-zinc-400'
-                    : 'bg-sky-950/90 text-sky-200 border-b border-sky-400/20'
-                }`}
-              >
-                Envío Express 24h Gratis en pedidos +45€ · Cera 100% Soja Orgánica
-              </div>
-
-              <div className="relative h-[410px] overflow-hidden bg-white text-zinc-900">
-                <div
-                  className="transition-transform duration-700 ease-in-out"
-                  style={{
-                    transform:
-                      activeBuildStep === 2 || activeBuildStep === 3
-                        ? 'translateY(-135px)'
-                        : 'translateY(0px)'
-                  }}
-                >
-                  <div
-                    className={`h-48 p-6 flex flex-col justify-center items-center text-center relative transition-all ${
-                      activeBuildStep === 0
-                        ? 'bg-zinc-200 text-zinc-500 border-b border-dashed border-zinc-400'
-                        : 'bg-gradient-to-r from-stone-900 via-amber-950 to-stone-900 text-white'
-                    }`}
-                  >
-                    <p className="text-[10px] uppercase tracking-widest opacity-80">
-                      VÉRTICE STUDIO · COLECCIÓN BOTÁNICA
-                    </p>
-                    <h4 className="text-xl font-bold mt-1">
-                      {activeBuildStep === 0
-                        ? '[ WIREFRAME HERO BANNER ]'
-                        : 'Luz y aroma que transforman tu espacio'}
-                    </h4>
-                    <span className="mt-3 px-4 py-1.5 rounded-full text-[11px] font-bold bg-white text-stone-900">
-                      Explorar Colección
-                    </span>
-                  </div>
-
-                  <div className="p-5">
-                    <div className="flex items-center justify-between mb-3">
-                      <p className="text-xs font-bold uppercase tracking-wider text-stone-700">
-                        Más vendidos
+            ) : (
+              <div className="p-6 sm:p-10 lg:pr-24 relative">
+                <div className="flex flex-wrap items-center justify-between gap-4 pb-6 mb-8 border-b border-white/10">
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-11 h-11 rounded-2xl bg-sky-400/10 border border-sky-400/30 flex items-center justify-center text-[#38bdf8]">
+                      {currentCategory.id === 'tech' && <Smartphone size={22} />}
+                      {currentCategory.id === 'candle' && <Flame size={22} className="text-amber-400" />}
+                      {currentCategory.id === 'clothing' && <Shirt size={22} />}
+                    </div>
+                    <div>
+                      <div className="font-black tracking-tight text-base sm:text-xl text-white">
+                        {currentCategory.brandName}
+                      </div>
+                      <p className="text-[11px] sm:text-xs text-zinc-400 font-medium">
+                        {currentCategory.badge}
                       </p>
-                      {activeBuildStep >= 3 && (
-                        <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">
-                          ★ 4.9/5 (184 opiniones)
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="grid grid-cols-4 gap-3">
-                      {[
-                        { name: 'Santal & Cedro', price: '38,00 €', tone: 'from-amber-200 to-stone-300' },
-                        { name: 'Lavanda & Salvia', price: '38,00 €', tone: 'from-stone-300 to-amber-100' },
-                        { name: 'Higo & Vetiver', price: '42,00 €', tone: 'from-amber-300 to-stone-200' },
-                        { name: 'Pack Ritual Dúo', price: '72,00 €', tone: 'from-stone-800 to-amber-900' }
-                      ].map((prod, i) => (
-                        <div key={i} className="rounded-lg border border-stone-200 p-2 text-left">
-                          <div
-                            className={`h-24 rounded bg-gradient-to-br ${
-                              activeBuildStep === 0 ? 'from-zinc-200 to-zinc-300' : prod.tone
-                            } flex items-center justify-center mb-2`}
-                          >
-                            <div className="w-8 h-10 rounded bg-white/80 shadow-sm" />
-                          </div>
-                          <p className="text-[10px] font-bold text-stone-800 truncate">{prod.name}</p>
-                          <p className="text-[10px] text-stone-500">{prod.price}</p>
-                          <div className="mt-1.5 py-1 rounded bg-stone-900 text-white text-center text-[9px] font-bold">
-                            Añadir
-                          </div>
-                        </div>
-                      ))}
                     </div>
                   </div>
-                </div>
 
-                {activeBuildStep === 5 && (
-                  <div className="absolute top-16 right-4 z-30 w-64 rounded-xl bg-[#0b101b]/95 border border-sky-400/50 p-3 text-white shadow-2xl backdrop-blur-md">
-                    <div className="flex items-center gap-2 text-[11px] font-bold text-sky-400">
-                      <ShoppingBag className="w-3.5 h-3.5" />
-                      <span>shopify · Nuevo pedido</span>
-                    </div>
-                    <p className="text-xs font-semibold mt-1">+72,00 € · 1 artículo · Online Store</p>
-                  </div>
-                )}
-              </div>
-
-              <div className="px-4 py-2.5 bg-[#080c14] border-t border-white/10 flex items-center justify-between text-xs font-mono">
-                <span className="text-sky-400 font-bold">READY TO SELL</span>
-                <span className="text-zinc-400">shopify infrastructure</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* PROCESO EN 6 PASOS */}
-      <section id="proceso" className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 py-24 border-t border-white/10">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
-          <div>
-            <span className="text-xs font-mono uppercase tracking-widest text-zinc-400">
-              PROCESO
-            </span>
-            <h2 className="text-4xl sm:text-6xl font-extrabold tracking-tight mt-2 leading-[1.08]">
-              Seis pasos.
-              <span className="block text-zinc-500">Sin sorpresas.</span>
-            </h2>
-          </div>
-
-          <div className="max-w-xs space-y-1">
-            <p className="text-xs font-mono uppercase tracking-widest text-sky-400 font-bold">
-              READY IN ≤ 7 DAYS*
-            </p>
-            <p className="text-xs text-zinc-400 leading-relaxed">
-              * Desde que disponemos de los accesos y catálogo. Desarrollos especiales a medida se presupuestan por separado.
-            </p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {PROCESS_TIMELINE.map((item) => (
-            <div key={item.num} className="rounded-2xl border border-white/10 bg-white/[0.02] p-6 space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-mono font-bold text-sky-400 px-2.5 py-1 rounded-md bg-sky-400/10 border border-sky-400/20">
-                  {item.num}
-                </span>
-                <Check className="w-4 h-4 text-zinc-600" />
-              </div>
-              <h3 className="text-lg font-bold text-white">{item.title}</h3>
-              <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">{item.desc}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 pt-16 border-t border-white/10 mt-16">
-          <div className="space-y-2">
-            <span className="text-xs font-mono uppercase tracking-widest text-zinc-400">NOSOTROS</span>
-            <p className="text-lg sm:text-xl font-bold text-white leading-snug">
-              Construimos y configuramos BUILD: tienda, conversión, datos y formación.
-            </p>
-          </div>
-          <div className="space-y-2">
-            <span className="text-xs font-mono uppercase tracking-widest text-zinc-400">TÚ</span>
-            <p className="text-lg sm:text-xl font-bold text-white leading-snug">
-              Marca, productos, fotografías, precios, información y accesos.
-            </p>
-          </div>
-          <div className="space-y-2">
-            <span className="text-xs font-mono uppercase tracking-widest text-zinc-400">COSTES EXTERNOS</span>
-            <p className="text-lg sm:text-xl font-bold text-white leading-snug">
-              Suscripción de Shopify · Dominio · Apps opcionales de terceros.
-            </p>
-            <p className="text-xs text-zinc-400 pt-1">
-              Transparencia total: nunca instalamos herramientas de pago sin tu aprobación previa.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* CALCULADORA ROI */}
-      <section className="relative z-10 max-w-5xl mx-auto px-4 sm:px-8 py-16">
-        <div className="rounded-3xl border border-white/15 bg-gradient-to-b from-zinc-900/80 to-[#070a10] p-8 sm:p-12">
-          <div className="text-center max-w-2xl mx-auto mb-8">
-            <span className="text-xs font-mono uppercase tracking-widest text-sky-400">
-              CALCULADORA DE RETORNO
-            </span>
-            <h3 className="text-2xl sm:text-4xl font-extrabold text-white mt-2">
-              ¿Cuántas ventas necesitas para amortizar la tienda?
-            </h3>
-          </div>
-
-          <div className="flex flex-wrap justify-center gap-3 mb-8">
-            {[
-              { label: '🕯️ Velas / Vinos (55 €)', value: 55 },
-              { label: '👕 Moda / Ropa (95 €)', value: 95 },
-              { label: '📱 Reparaciones / Móviles (350 €)', value: 350 }
-            ].map(preset => (
-              <button
-                key={preset.value}
-                onClick={() => setTicketPromedio(preset.value)}
-                className={`px-4 py-2 rounded-full text-xs font-bold border transition-all cursor-pointer ${
-                  ticketPromedio === preset.value
-                    ? 'bg-sky-400 text-slate-950 border-sky-400'
-                    : 'bg-white/[0.03] border-white/10 text-zinc-300 hover:border-white/30'
-                }`}
-              >
-                {preset.label}
-              </button>
-            ))}
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-            <div className="md:col-span-7 space-y-4">
-              <div className="flex justify-between text-sm">
-                <span className="text-zinc-400">Ticket medio por venta:</span>
-                <span className="text-xl font-extrabold text-sky-400">{ticketPromedio} €</span>
-              </div>
-              <input
-                type="range"
-                min="25"
-                max="600"
-                step="5"
-                value={ticketPromedio}
-                onChange={e => setTicketPromedio(Number(e.target.value))}
-                className="w-full accent-sky-400 cursor-pointer"
-              />
-              <div className="flex justify-between text-[11px] font-mono text-zinc-500">
-                <span>25 €</span>
-                <span>300 €</span>
-                <span>600 €</span>
-              </div>
-            </div>
-
-            <div className="md:col-span-5 rounded-2xl bg-sky-400/10 border border-sky-400/30 p-6 text-center">
-              <span className="text-xs font-mono uppercase text-sky-300">AMORTIZACIÓN DIRECTA</span>
-              <p className="text-4xl font-extrabold text-white my-2">
-                Con solo {salesNeeded} {salesNeeded === 1 ? 'pedido' : 'pedidos'}
-              </p>
-              <p className="text-xs text-zinc-300">
-                recuperas el 100% de la inversión de tu paquete BUILD (997 €). El resto es beneficio neto.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* PLAN BUILD + ACUERDO TORRENT / VALENCIA */}
-      <section id="inversion" className="relative z-10 max-w-5xl mx-auto px-4 sm:px-8 py-20">
-        <div className="rounded-3xl border-2 border-sky-400/40 bg-gradient-to-b from-[#0c1424] to-[#060911] p-8 sm:p-12 shadow-[0_0_60px_rgba(56,189,248,0.12)]">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-white/10">
-            <div>
-              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-400/15 text-sky-300 text-xs font-mono uppercase">
-                PAQUETE OFICIAL LLAVE EN MANO
-              </span>
-              <h2 className="text-3xl sm:text-5xl font-extrabold text-white mt-3">
-                BUILD · Crear mi eCommerce
-              </h2>
-              <p className="text-zinc-400 text-sm sm:text-base mt-1">
-                Construcción completa en Shopify lista para facturar en menos de 7 días.
-              </p>
-            </div>
-
-            <div className="md:text-right shrink-0">
-              <span className="text-xs font-mono uppercase text-zinc-400">INVERSIÓN ÚNICA</span>
-              <p className="text-4xl sm:text-5xl font-extrabold text-white mt-1">
-                997 € <span className="text-lg font-normal text-zinc-400">+ IVA</span>
-              </p>
-              <p className="text-xs text-sky-300 mt-1">Opción de pago fraccionado · Entrega ≤ 7 días</p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-8">
-            {[
-              'Arquitectura y diseño completo en Shopify enfocado a conversión (CRO)',
-              'Configuración de pagos en 1 clic (Apple Pay, Google Pay, Tarjeta y Klarna)',
-              'Sistema híbrido opcional: catálogo de productos + citas o reservas',
-              'Optimización móvil ultrarrápida y estructura técnica para SEO',
-              'Integración de analítica, píxeles de seguimiento y reseñas sociales',
-              'Formación 1 a 1 para que controles tu inventario y pedidos con soltura'
-            ].map((feat, i) => (
-              <div key={i} className="flex items-start gap-3">
-                <div className="w-5 h-5 rounded-full bg-sky-400/20 border border-sky-400/50 flex items-center justify-center shrink-0 mt-0.5">
-                  <Check className="w-3 h-3 text-sky-300" />
-                </div>
-                <span className="text-sm text-zinc-200">{feat}</span>
-              </div>
-            ))}
-          </div>
-
-          <div className="rounded-2xl bg-sky-400/10 border border-sky-400/40 p-5 mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="flex items-start gap-3.5">
-              <MapPin className="w-6 h-6 text-sky-400 shrink-0 mt-0.5" />
-              <div>
-                <p className="text-sm font-bold text-white">
-                  ¿Tienes un negocio físico en Torrent o Valencia?
-                </p>
-                <p className="text-xs text-zinc-300 mt-0.5">
-                  Estamos seleccionando comercios locales clave para nuestros próximos Casos de Éxito. Consulta condiciones especiales o posibilidades de colaboración directa.
-                </p>
-              </div>
-            </div>
-            <span className="px-3 py-1 rounded-full bg-sky-400 text-slate-950 font-extrabold text-xs whitespace-nowrap shrink-0">
-              Plazas Limitadas
-            </span>
-          </div>
-
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <a
-              href="https://wa.me/34600000000?text=Hola%20Fresh%20Agency,%20quiero%20información%20sobre%20mi%20tienda%20Shopify"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full sm:w-auto px-8 py-4 rounded-full bg-sky-400 hover:bg-sky-300 text-slate-950 font-extrabold text-base text-center transition-all shadow-[0_0_30px_rgba(56,189,248,0.4)]"
-            >
-              Solicitar Propuesta para mi Negocio →
-            </a>
-            <p className="text-xs text-zinc-400">
-              Sin permanencias ni comisiones sobre tus ventas. La tienda te pertenece al 100%.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* FOOTER */}
-      <footer className="border-t border-white/10 py-12 text-center text-xs text-zinc-500">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <span className="text-lg font-extrabold text-white">
-              FRESH<span className="text-sky-400">.</span>
-            </span>
-            <span>· Agencia eCommerce Shopify · Torrent & Valencia</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <a
-              href="https://likinagency.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-zinc-400 hover:text-sky-400 transition-colors"
-            >
-              Metodología Likin Agency ↗
-            </a>
-            <span>© {new Date().getFullYear()} Fresh Agency</span>
-          </div>
-        </div>
-      </footer>
-    </div>
-  );
-}
+                  <div className="flex items-center gap-2">
