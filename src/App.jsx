@@ -21,7 +21,10 @@ import {
   ExternalLink,
   Calendar,
   Wrench,
-  Package
+  Package,
+  Sliders,
+  DollarSign,
+  ChevronDown
 } from 'lucide-react';
 
 const STORES = [
@@ -146,91 +149,40 @@ const STORES = [
 ];
 
 const BUILD_STEPS = [
-  {
-    id: 0,
-    num: '01',
-    code: 'STRUCTURE',
-    desc: 'Wireframe, header, grid, navegación.'
-  },
-  {
-    id: 1,
-    num: '02',
-    code: 'DESIGN',
-    desc: 'Colores, tipografía, branding.'
-  },
-  {
-    id: 2,
-    num: '03',
-    code: 'PRODUCT',
-    desc: 'Producto, galería, precio, variantes, CTA.'
-  },
-  {
-    id: 3,
-    num: '04',
-    code: 'CONVERSION',
-    desc: 'Reviews, trust, upsells, UX.'
-  },
-  {
-    id: 4,
-    num: '05',
-    code: 'DATA',
-    desc: 'Pixel, analytics, tracking, Klaviyo.'
-  },
-  {
-    id: 5,
-    num: '06',
-    code: 'READY',
-    desc: 'La tienda completa. Preparada para vender.'
-  }
+  { id: 0, num: '01', code: 'STRUCTURE', desc: 'Wireframe, header, grid y navegación limpia.' },
+  { id: 1, num: '02', code: 'DESIGN', desc: 'Tipografía de alto impacto, paleta Ice Blue y microinteracciones.' },
+  { id: 2, num: '03', code: 'PRODUCT', desc: 'Galería de producto, variantes dinámicas y botón de compra directa.' },
+  { id: 3, num: '04', code: 'CONVERSION', desc: 'Reseñas sociales, insignias de confianza y upsells integrados.' },
+  { id: 4, num: '05', code: 'DATA', desc: 'Meta Pixel, Google Analytics 4 y automatización con Klaviyo.' },
+  { id: 5, num: '06', code: 'READY', desc: 'Tienda completamente operativa y lista para recibir clientes.' }
 ];
 
 const PROCESS_TIMELINE = [
-  { num: '01', title: 'Cuéntanos tu proyecto' },
-  { num: '02', title: 'Validamos encaje' },
-  { num: '03', title: 'Construimos' },
-  { num: '04', title: 'Revisamos' },
-  { num: '05', title: 'Te enseñamos' },
-  { num: '06', title: 'Lanzamos' }
+  { num: '01', title: 'Cuéntanos tu proyecto', desc: 'Analizamos tu catálogo o servicios y tus objetivos comerciales.' },
+  { num: '02', title: 'Validamos encaje', desc: 'Definimos la arquitectura idónea sin añadir herramientas innecesarias.' },
+  { num: '03', title: 'Construimos', desc: 'Diseñamos y programamos la infraestructura completa en Shopify.' },
+  { num: '04', title: 'Revisamos', desc: 'Ajustamos detalles, pasarelas de pago y experiencia en móviles.' },
+  { num: '05', title: 'Te enseñamos', desc: 'Sesión formativa 1 a 1 para que controles tu tienda sin depender de nadie.' },
+  { num: '06', title: 'Lanzamos', desc: 'Publicación oficial y soporte directo para empezar a vender.' }
 ];
 
 export default function App() {
-  // Live iPhone notifications state
   const [salesCount, setSalesCount] = useState(14);
   const [revenueToday, setRevenueToday] = useState(1840);
   const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      store: 'LA POMA LAB',
-      time: 'Ahora mismo',
-      text: 'Nuevo pedido #1084 · iPhone 15 Pro 256GB · 829,00 €'
-    },
-    {
-      id: 2,
-      store: 'LA POMA LAB · TALLER',
-      time: 'Hace 4 min',
-      text: 'Reserva confirmada · Pantalla OLED iPhone 14 · 119,00 €'
-    },
-    {
-      id: 3,
-      store: 'VÉRTICE STUDIO',
-      time: 'Hace 12 min',
-      text: 'Nuevo pedido #412 · Pack Ritual 2x250g · 72,00 €'
-    }
+    { id: 1, store: 'LA POMA LAB', time: 'Ahora mismo', text: 'Nuevo pedido #1084 · iPhone 15 Pro 256GB · 829,00 €' },
+    { id: 2, store: 'LA POMA LAB · TALLER', time: 'Hace 4 min', text: 'Reserva confirmada · Pantalla OLED iPhone 14 · 119,00 €' },
+    { id: 3, store: 'VÉRTICE STUDIO', time: 'Hace 12 min', text: 'Nuevo pedido #412 · Pack Ritual 2x250g · 72,00 €' }
   ]);
 
-  // Interactive Showcase state
-  const [storeMode, setStoreMode] = useState('fresh'); // 'fresh' | 'old'
+  const [storeMode, setStoreMode] = useState('fresh');
   const [storeIndex, setStoreIndex] = useState(0);
   const [selectedOptionIdx, setSelectedOptionIdx] = useState(0);
   const [selectedColor, setSelectedColor] = useState('blue');
   const [selectedSlot, setSelectedSlot] = useState('Hoy · 17:30h');
   const [selectedSize, setSelectedSize] = useState('L');
   const [checkoutSuccess, setCheckoutSuccess] = useState(false);
-
-  // De la idea a la tienda state
   const [activeBuildStep, setActiveBuildStep] = useState(5);
-
-  // ROI Calculator state
   const [ticketPromedio, setTicketPromedio] = useState(120);
 
   const currentStore = STORES[storeIndex];
@@ -244,21 +196,16 @@ export default function App() {
       { store: 'NÓMADA CLUB', amount: 94, msg: 'Nuevo pedido · Pack Dúo Heavyweight · 94,00 €' }
     ];
     const pick = samples[Math.floor(Math.random() * samples.length)];
-    setSalesCount((c) => c + 1);
-    setRevenueToday((r) => r + pick.amount);
-    setNotifications((prev) => [
-      {
-        id: Date.now(),
-        store: pick.store,
-        time: 'Justo ahora',
-        text: pick.msg
-      },
+    setSalesCount(c => c + 1);
+    setRevenueToday(r => r + pick.amount);
+    setNotifications(prev => [
+      { id: Date.now(), store: pick.store, time: 'Justo ahora', text: pick.msg },
       ...prev.slice(0, 2)
     ]);
   };
 
   const handleNextStore = () => {
-    setStoreIndex((prev) => (prev + 1) % STORES.length);
+    setStoreIndex(prev => (prev + 1) % STORES.length);
     setSelectedOptionIdx(0);
     setCheckoutSuccess(false);
   };
@@ -271,28 +218,25 @@ export default function App() {
 
   const handleTriggerApplePay = () => {
     setCheckoutSuccess(true);
-    setTimeout(() => setCheckoutSuccess(false), 2600);
+    setTimeout(() => setCheckoutSuccess(false), 2400);
   };
 
   const salesNeeded = Math.max(1, Math.ceil(997 / ticketPromedio));
 
   return (
-    <div className="min-h-screen bg-[#05070b] text-zinc-100 selection:bg-sky-400 selection:text-black overflow-x-hidden">
-      {/* Ambient Ice Glows */}
+    <div className="min-h-screen bg-[#05070b] text-zinc-100 selection:bg-sky-400 selection:text-black overflow-x-hidden font-sans">
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div className="absolute -top-40 left-1/4 w-[550px] h-[550px] bg-sky-500/10 rounded-full blur-[150px]" />
         <div className="absolute top-1/3 -right-40 w-[450px] h-[450px] bg-cyan-400/5 rounded-full blur-[140px]" />
       </div>
 
-      {/* NAVBAR — Clean, wide spacing, no overlapping */}
+      {/* HEADER */}
       <header className="sticky top-0 z-50 border-b border-white/[0.07] bg-[#05070b]/85 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 h-20 flex items-center justify-between gap-4">
-          {/* Left: Brand Logo + Likin Badge */}
           <div className="flex items-center gap-5 sm:gap-8 min-w-0">
             <a href="#" className="text-2xl sm:text-3xl font-extrabold tracking-tighter text-white shrink-0">
               FRESH<span className="text-sky-400">.</span>
             </a>
-
             <a
               href="https://likinagency.com"
               target="_blank"
@@ -310,19 +254,12 @@ export default function App() {
             </a>
           </div>
 
-          {/* Right: Nav items */}
           <nav className="flex items-center gap-5 sm:gap-8 shrink-0">
-            <a
-              href="#escaparate"
-              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-zinc-300 hover:text-sky-400 transition-colors whitespace-nowrap"
-            >
+            <a href="#escaparate" className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-zinc-300 hover:text-sky-400 transition-colors whitespace-nowrap">
               <Sparkles className="w-3.5 h-3.5 text-sky-400 shrink-0" />
               <span>Toca y Prueba</span>
             </a>
-            <a
-              href="#proceso"
-              className="hidden sm:inline-block text-sm font-medium text-zinc-400 hover:text-white transition-colors whitespace-nowrap"
-            >
+            <a href="#proceso" className="hidden sm:inline-block text-sm font-medium text-zinc-400 hover:text-white transition-colors whitespace-nowrap">
               Proceso 7 Días
             </a>
             <a
@@ -338,14 +275,12 @@ export default function App() {
       {/* HERO SECTION */}
       <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 pt-12 pb-20 lg:pt-20 lg:pb-28">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
-          {/* Left Column */}
           <div className="lg:col-span-7 space-y-7">
             <div className="flex flex-wrap items-center gap-3">
               <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-400/10 border border-sky-400/30 text-sky-300 text-xs font-mono uppercase tracking-wider">
                 <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
                 READY IN ≤ 7 DAYS · SHOPIFY EXPERT
               </span>
-
               <a
                 href="https://likinagency.com"
                 target="_blank"
@@ -400,7 +335,7 @@ export default function App() {
             </div>
           </div>
 
-          {/* Right Column: Live iPhone Lockscreen Simulator */}
+          {/* SIMULADOR EN VIVO */}
           <div className="lg:col-span-5">
             <div className="relative mx-auto max-w-md rounded-3xl border border-white/15 bg-gradient-to-b from-zinc-900/90 to-[#070a10] p-6 shadow-2xl">
               <div className="flex items-center justify-between pb-4 mb-5 border-b border-white/10">
@@ -419,7 +354,6 @@ export default function App() {
                 </button>
               </div>
 
-              {/* Revenue Counter */}
               <div className="grid grid-cols-2 gap-3 mb-5">
                 <div className="rounded-2xl bg-white/[0.03] border border-white/[0.08] p-3.5">
                   <span className="text-[11px] font-mono uppercase text-zinc-400">Facturación Hoy</span>
@@ -433,7 +367,6 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Notification Stack */}
               <div className="space-y-2.5">
                 {notifications.map((item, idx) => (
                   <div
@@ -441,7 +374,7 @@ export default function App() {
                     className={`rounded-2xl p-3.5 border transition-all ${
                       idx === 0
                         ? 'bg-sky-400/[0.09] border-sky-400/40 shadow-[0_0_25px_rgba(56,189,248,0.12)]'
-                        : 'bg-white/[0.03] border-white/[0.07] opacity-80'
+                        : 'bg-white/[0.03] border-white/07 opacity-80'
                     }`}
                   >
                     <div className="flex items-center justify-between text-xs mb-1">
@@ -457,14 +390,14 @@ export default function App() {
               </div>
 
               <p className="text-[11px] text-center text-zinc-500 mt-4">
-                Toca <strong className="text-zinc-300">«¡Simular Venta!»</strong> para ver cómo entran los pagos y reservas en tiempo real.
+                Toca <strong className="text-zinc-300">«¡Simular Venta!»</strong> para ver cómo entran los pedidos en directo.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* INTERACTIVE STORE SHOWCASE */}
+      {/* ESCAPARATE INTERACTIVO */}
       <section id="escaparate" className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 py-20 border-t border-white/10">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
           <div>
@@ -476,7 +409,6 @@ export default function App() {
             </h2>
           </div>
 
-          {/* Switch Old Web vs Fresh Store */}
           <div className="inline-flex rounded-full p-1 bg-zinc-900 border border-white/10 self-start">
             <button
               onClick={() => setStoreMode('old')}
@@ -501,7 +433,6 @@ export default function App() {
           </div>
         </div>
 
-        {/* Category Pills */}
         <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
           <div className="flex flex-wrap items-center gap-2">
             {STORES.map((st, idx) => (
@@ -528,7 +459,6 @@ export default function App() {
           </button>
         </div>
 
-        {/* Showcase Container */}
         {storeMode === 'old' ? (
           <div className="rounded-3xl border border-rose-500/30 bg-zinc-950 p-8 sm:p-12 text-center space-y-5">
             <p className="text-xs font-mono uppercase tracking-widest text-rose-400">
@@ -538,7 +468,7 @@ export default function App() {
               «Rellena este formulario y te responderemos en 24-48 horas...»
             </h3>
             <p className="text-zinc-400 max-w-xl mx-auto text-sm sm:text-base">
-              Cuando un cliente quiere comprar un iPhone, reservar una reparación urgente o pedir un regalo, no quiere esperar un correo ni llamar por teléfono. Si no puede pagar o reservar en 15 segundos desde el móvil, se va a la competencia.
+              Cuando un cliente quiere comprar un producto o reservar una cita urgente, no quiere rellenar formularios ni llamar por teléfono. Si no puede pagar en 15 segundos con su teléfono, se va con otro negocio.
             </p>
             <button
               onClick={() => setStoreMode('fresh')}
@@ -550,7 +480,6 @@ export default function App() {
           </div>
         ) : (
           <div className="relative rounded-3xl border border-white/15 bg-gradient-to-b from-[#0b101b] to-[#070a10] overflow-hidden shadow-2xl">
-            {/* Browser Bar */}
             <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/10 bg-black/40">
               <div className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full bg-zinc-700" />
@@ -567,13 +496,11 @@ export default function App() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 relative">
-              {/* Left Product Minimalist Illustration */}
               <div className="lg:col-span-5 p-8 sm:p-10 flex flex-col items-center justify-center bg-gradient-to-b from-sky-400/[0.05] to-transparent border-b lg:border-b-0 lg:border-r border-white/10 relative">
                 <span className="text-[11px] font-mono uppercase tracking-widest text-sky-300 px-3 py-1 rounded-full bg-sky-400/10 border border-sky-400/25 mb-6 text-center">
                   {currentStore.badge}
                 </span>
 
-                {/* Minimalist SVG per store */}
                 {currentStore.id === 'poma' && (
                   <div className="my-4 flex flex-col items-center">
                     <div
@@ -589,11 +516,9 @@ export default function App() {
                           'linear-gradient(160deg, rgba(30,41,59,0.95) 0%, rgba(9,13,22,0.98) 100%)'
                       }}
                     >
-                      {/* Dynamic Island */}
                       <div className="w-16 h-4 rounded-full bg-black mx-auto flex items-center justify-end px-1.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-sky-400/70" />
                       </div>
-                      {/* Screen Info */}
                       <div className="text-center space-y-2 my-auto">
                         <Smartphone className="w-10 h-10 text-sky-400 mx-auto" />
                         <p className="text-xs font-bold text-white tracking-tight">LA POMA LAB</p>
@@ -604,9 +529,8 @@ export default function App() {
                       <div className="w-20 h-1 rounded-full bg-white/30 mx-auto" />
                     </div>
 
-                    {/* Finish selector */}
                     <div className="flex items-center gap-2.5 mt-5">
-                      {currentStore.colors.map((c) => (
+                      {currentStore.colors.map(c => (
                         <button
                           key={c.id}
                           onClick={() => setSelectedColor(c.id)}
@@ -616,10 +540,7 @@ export default function App() {
                               : 'border-white/10 bg-white/[0.02] text-zinc-400'
                           }`}
                         >
-                          <span
-                            className="w-2.5 h-2.5 rounded-full"
-                            style={{ backgroundColor: c.hex }}
-                          />
+                          <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: c.hex }} />
                           <span>{c.name}</span>
                         </button>
                       ))}
@@ -630,7 +551,6 @@ export default function App() {
                 {currentStore.id === 'vertice' && (
                   <div className="my-6 flex flex-col items-center">
                     <div className="relative flex items-end justify-center gap-3 h-64">
-                      {/* Main Amber Jar */}
                       <div className="relative flex flex-col items-center">
                         <div className="flex gap-3 mb-1">
                           <div className="w-3 h-6 rounded-full bg-gradient-to-t from-amber-500 via-amber-300 to-white animate-pulse shadow-[0_0_20px_#f59e0b]" />
@@ -647,7 +567,6 @@ export default function App() {
                         </div>
                       </div>
 
-                      {/* Second Jar if Pack */}
                       {currentOption.isPack && (
                         <div className="w-24 h-32 rounded-b-xl rounded-t border border-amber-500/30 bg-gradient-to-b from-amber-950/60 to-stone-950 p-2 flex items-center justify-center">
                           <div className="w-full py-2 bg-[#f5f2eb] text-stone-900 rounded text-center">
@@ -661,7 +580,6 @@ export default function App() {
 
                 {currentStore.id === 'nomada' && (
                   <div className="my-4 flex flex-col items-center">
-                    {/* Minimalist Boxy Hoodie SVG */}
                     <svg viewBox="0 0 220 200" className="w-56 h-52 drop-shadow-2xl">
                       <path
                         d="M70 30 Q110 15 150 30 L195 65 L175 100 L155 85 L155 180 L65 180 L65 85 L45 100 L25 65 Z"
@@ -671,23 +589,14 @@ export default function App() {
                       />
                       <path d="M85 30 Q110 55 135 30" fill="none" stroke="#52525b" strokeWidth="2" />
                       <rect x="82" y="125" width="56" height="32" rx="6" fill="#27272a" stroke="#3f3f46" />
-                      <text
-                        x="110"
-                        y="92"
-                        textAnchor="middle"
-                        fill="#f4f4f5"
-                        fontSize="11"
-                        fontWeight="bold"
-                        letterSpacing="2"
-                      >
+                      <text x="110" y="92" textAnchor="middle" fill="#f4f4f5" fontSize="11" fontWeight="bold" letterSpacing="2">
                         NÓMADA · {selectedSize}
                       </text>
                     </svg>
 
-                    {/* Size buttons */}
                     <div className="flex items-center gap-2 mt-4">
                       <span className="text-xs text-zinc-400 mr-1">Talla:</span>
-                      {currentStore.sizes.map((sz) => (
+                      {currentStore.sizes.map(sz => (
                         <button
                           key={sz}
                           onClick={() => setSelectedSize(sz)}
@@ -705,7 +614,6 @@ export default function App() {
                 )}
               </div>
 
-              {/* Right Interactive Product Configurator */}
               <div className="lg:col-span-7 p-7 sm:p-10 lg:pr-20 flex flex-col justify-between space-y-6">
                 <div>
                   <div className="flex items-center justify-between gap-2">
@@ -723,7 +631,6 @@ export default function App() {
                     {currentStore.title}
                   </h3>
 
-                  {/* Dynamic Price Display */}
                   <div className="flex items-baseline gap-3 mt-4">
                     <span className="text-3xl sm:text-4xl font-extrabold text-white">
                       {currentOption.price} €
@@ -736,15 +643,10 @@ export default function App() {
                     </span>
                   </div>
                   <p className="text-xs text-zinc-400 mt-1">
-                    o 3 plazos sin intereses de{' '}
-                    <strong className="text-zinc-200">
-                      {(currentOption.price / 3).toFixed(2)} €
-                    </strong>{' '}
-                    con Klarna
+                    o 3 plazos sin intereses de <strong className="text-zinc-200">{(currentOption.price / 3).toFixed(2)} €</strong> con Klarna
                   </p>
                 </div>
 
-                {/* Option Selector */}
                 <div className="space-y-2.5">
                   <label className="block text-xs font-mono uppercase tracking-wider text-zinc-400">
                     {currentStore.optionsLabel}
@@ -783,7 +685,6 @@ export default function App() {
                   ))}
                 </div>
 
-                {/* Extra Slot Selector if Repair is chosen on LA POMA LAB */}
                 {currentStore.id === 'poma' && currentOption.isRepair && (
                   <div className="p-3.5 rounded-2xl bg-sky-400/[0.07] border border-sky-400/30 space-y-2">
                     <div className="flex items-center gap-1.5 text-xs font-bold text-sky-300">
@@ -791,7 +692,7 @@ export default function App() {
                       <span>Elige hora de entrada en taller (Torrent):</span>
                     </div>
                     <div className="grid grid-cols-3 gap-2">
-                      {currentStore.slots.map((slot) => (
+                      {currentStore.slots.map(slot => (
                         <button
                           key={slot}
                           onClick={() => setSelectedSlot(slot)}
@@ -808,7 +709,6 @@ export default function App() {
                   </div>
                 )}
 
-                {/* 1-Click Buy CTA */}
                 <div className="pt-1">
                   <button
                     onClick={handleTriggerApplePay}
@@ -817,9 +717,7 @@ export default function App() {
                     {checkoutSuccess ? (
                       <>
                         <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-                        <span>
-                          ¡Pedido Procesado en 1 Clic! ({currentOption.price} €)
-                        </span>
+                        <span>¡Pedido Confirmado en 1 Clic! ({currentOption.price} €)</span>
                       </>
                     ) : (
                       <>
@@ -833,7 +731,6 @@ export default function App() {
                   </button>
                 </div>
 
-                {/* Right Edge Vertical Arrow Button */}
                 <button
                   onClick={handleNextStore}
                   title="Ver siguiente ejemplo de tienda"
@@ -852,10 +749,9 @@ export default function App() {
         )}
       </section>
 
-      {/* SECTION: DE LA IDEA A LA TIENDA (Interactive 01 STRUCTURE -> 06 READY) */}
+      {/* DE LA IDEA A LA TIENDA (01 A 06) */}
       <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 py-24 border-t border-white/10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          {/* Left Column: 01 to 06 Interactive Steps */}
           <div className="lg:col-span-5 space-y-6">
             <div>
               <span className="text-xs font-mono uppercase tracking-widest text-zinc-400">
@@ -878,19 +774,11 @@ export default function App() {
                       isActive ? 'bg-sky-400/[0.07]' : 'hover:bg-white/[0.02]'
                     }`}
                   >
-                    <span
-                      className={`text-xs font-mono mt-0.5 ${
-                        isActive ? 'text-sky-400 font-bold' : 'text-zinc-500'
-                      }`}
-                    >
+                    <span className={`text-xs font-mono mt-0.5 ${isActive ? 'text-sky-400 font-bold' : 'text-zinc-500'}`}>
                       {st.num}
                     </span>
                     <div>
-                      <p
-                        className={`text-xs font-mono uppercase tracking-wider ${
-                          isActive ? 'text-white font-bold' : 'text-zinc-300'
-                        }`}
-                      >
+                      <p className={`text-xs font-mono uppercase tracking-wider ${isActive ? 'text-white font-bold' : 'text-zinc-300'}`}>
                         {st.code}
                       </p>
                       <p className="text-xs text-zinc-400 mt-0.5">{st.desc}</p>
@@ -901,47 +789,12 @@ export default function App() {
             </div>
 
             <p className="text-[11px] text-zinc-500">
-              Haz clic en cada fase (01 a 06) para inspeccionar cómo ensamblamos la arquitectura de conversión de tu tienda.
+              Haz clic en cada fase para inspeccionar cómo estructuramos la arquitectura de ventas.
             </p>
           </div>
 
-          {/* Right Column: Live Evolving Store Preview + Floating Conversion/Data Pills */}
           <div className="lg:col-span-7 relative flex items-center justify-center">
-            {/* Left Floating Badges (CONVERSION) */}
-            <div className="hidden xl:flex flex-col gap-2.5 absolute -left-8 top-1/4 z-20">
-              {['REVIEWS', 'TRUST BADGES', 'UPSELL', 'ENVÍO GRATIS'].map((pill) => (
-                <div
-                  key={pill}
-                  className={`px-3 py-1.5 rounded-lg border text-[10px] font-mono uppercase tracking-wider transition-all ${
-                    activeBuildStep >= 3
-                      ? 'bg-[#070b12]/95 border-sky-400/50 text-sky-300 shadow-[0_0_15px_rgba(56,189,248,0.2)]'
-                      : 'bg-zinc-900/60 border-white/10 text-zinc-600'
-                  }`}
-                >
-                  {pill}
-                </div>
-              ))}
-            </div>
-
-            {/* Right Floating Badges (DATA) */}
-            <div className="hidden xl:flex flex-col gap-2.5 absolute -right-6 bottom-1/4 z-20">
-              {['META PIXEL', 'EVENTOS DE COMPRA', 'KLAVIYO'].map((pill) => (
-                <div
-                  key={pill}
-                  className={`px-3 py-1.5 rounded-lg border text-[10px] font-mono uppercase tracking-wider transition-all ${
-                    activeBuildStep >= 4
-                      ? 'bg-[#070b12]/95 border-sky-400/50 text-sky-300 shadow-[0_0_15px_rgba(56,189,248,0.2)]'
-                      : 'bg-zinc-900/60 border-white/10 text-zinc-600'
-                  }`}
-                >
-                  {pill}
-                </div>
-              ))}
-            </div>
-
-            {/* Browser Window */}
             <div className="w-full max-w-xl rounded-2xl border border-white/15 bg-[#0c1017] overflow-hidden shadow-2xl relative">
-              {/* Top browser bar */}
               <div className="px-4 py-2.5 bg-zinc-900 flex items-center justify-between border-b border-white/10">
                 <div className="flex gap-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
@@ -954,7 +807,6 @@ export default function App() {
                 </span>
               </div>
 
-              {/* Announcement Bar */}
               <div
                 className={`py-1.5 text-center text-[10px] font-medium transition-colors ${
                   activeBuildStep === 0
@@ -965,7 +817,6 @@ export default function App() {
                 Envío Express 24h Gratis en pedidos +45€ · Cera 100% Soja Orgánica
               </div>
 
-              {/* Dynamic Viewport that scrolls based on step */}
               <div className="relative h-[410px] overflow-hidden bg-white text-zinc-900">
                 <div
                   className="transition-transform duration-700 ease-in-out"
@@ -976,7 +827,6 @@ export default function App() {
                         : 'translateY(0px)'
                   }}
                 >
-                  {/* Hero Banner inside Store */}
                   <div
                     className={`h-48 p-6 flex flex-col justify-center items-center text-center relative transition-all ${
                       activeBuildStep === 0
@@ -997,7 +847,6 @@ export default function App() {
                     </span>
                   </div>
 
-                  {/* Product Grid inside Store */}
                   <div className="p-5">
                     <div className="flex items-center justify-between mb-3">
                       <p className="text-xs font-bold uppercase tracking-wider text-stone-700">
@@ -1036,7 +885,6 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* Floating Shopify Sale Notification on Step 06 READY */}
                 {activeBuildStep === 5 && (
                   <div className="absolute top-16 right-4 z-30 w-64 rounded-xl bg-[#0b101b]/95 border border-sky-400/50 p-3 text-white shadow-2xl backdrop-blur-md">
                     <div className="flex items-center gap-2 text-[11px] font-bold text-sky-400">
@@ -1048,7 +896,6 @@ export default function App() {
                 )}
               </div>
 
-              {/* Bottom Ready Status Bar */}
               <div className="px-4 py-2.5 bg-[#080c14] border-t border-white/10 flex items-center justify-between text-xs font-mono">
                 <span className="text-sky-400 font-bold">READY TO SELL</span>
                 <span className="text-zinc-400">shopify infrastructure</span>
@@ -1058,7 +905,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* SECTION: PROCESO — SEIS PASOS. SIN SORPRESAS. (READY IN <= 7 DAYS) */}
+      {/* PROCESO EN 6 PASOS */}
       <section id="proceso" className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 py-24 border-t border-white/10">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
           <div>
@@ -1076,78 +923,69 @@ export default function App() {
               READY IN ≤ 7 DAYS*
             </p>
             <p className="text-xs text-zinc-400 leading-relaxed">
-              * Desde que disponemos de toda la información y materiales necesarios. Proyectos con desarrollos a medida complejos se valoran por separado.
+              * Desde que disponemos de los accesos y catálogo. Desarrollos especiales a medida se presupuestan por separado.
             </p>
           </div>
         </div>
 
-        {/* 6 Steps Timeline */}
-        <div className="relative pt-4 pb-16">
-          <div className="hidden md:block absolute top-[22px] left-0 right-0 h-[2px] bg-sky-400/35" />
-          <div className="grid grid-cols-2 md:grid-cols-6 gap-8 relative">
-            {PROCESS_TIMELINE.map((item) => (
-              <div key={item.num} className="space-y-3">
-                <div className="w-3.5 h-3.5 rounded-full bg-[#05070b] border-2 border-sky-400 shadow-[0_0_12px_#38bdf8]" />
-                <p className="text-xs font-mono text-sky-400 font-bold">{item.num}</p>
-                <p className="text-sm sm:text-base font-bold text-white">{item.title}</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {PROCESS_TIMELINE.map((item) => (
+            <div key={item.num} className="rounded-2xl border border-white/10 bg-white/[0.02] p-6 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-mono font-bold text-sky-400 px-2.5 py-1 rounded-md bg-sky-400/10 border border-sky-400/20">
+                  {item.num}
+                </span>
+                <Check className="w-4 h-4 text-zinc-600" />
               </div>
-            ))}
-          </div>
+              <h3 className="text-lg font-bold text-white">{item.title}</h3>
+              <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">{item.desc}</p>
+            </div>
+          ))}
         </div>
 
-        {/* 3 Columns: NOSOTROS / TÚ / COSTES EXTERNOS */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 pt-12 border-t border-white/10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 pt-16 border-t border-white/10 mt-16">
           <div className="space-y-2">
-            <span className="text-xs font-mono uppercase tracking-widest text-zinc-400">
-              NOSOTROS
-            </span>
+            <span className="text-xs font-mono uppercase tracking-widest text-zinc-400">NOSOTROS</span>
             <p className="text-lg sm:text-xl font-bold text-white leading-snug">
               Construimos y configuramos BUILD: tienda, conversión, datos y formación.
             </p>
           </div>
-
           <div className="space-y-2">
-            <span className="text-xs font-mono uppercase tracking-widest text-zinc-400">
-              TÚ
-            </span>
+            <span className="text-xs font-mono uppercase tracking-widest text-zinc-400">TÚ</span>
             <p className="text-lg sm:text-xl font-bold text-white leading-snug">
               Marca, productos, fotografías, precios, información y accesos.
             </p>
           </div>
-
           <div className="space-y-2">
-            <span className="text-xs font-mono uppercase tracking-widest text-zinc-400">
-              COSTES EXTERNOS
-            </span>
+            <span className="text-xs font-mono uppercase tracking-widest text-zinc-400">COSTES EXTERNOS</span>
             <p className="text-lg sm:text-xl font-bold text-white leading-snug">
-              Shopify · Dominio · Apps adicionales si fueran necesarias.
+              Suscripción de Shopify · Dominio · Apps opcionales de terceros.
             </p>
             <p className="text-xs text-zinc-400 pt-1">
-              Nunca añadiremos una herramienta de pago sin explicarte antes para qué sirve y cuánto cuesta.
+              Transparencia total: nunca instalamos herramientas de pago sin tu aprobación previa.
             </p>
           </div>
         </div>
       </section>
 
-      {/* ROI CALCULATOR */}
+      {/* CALCULADORA ROI */}
       <section className="relative z-10 max-w-5xl mx-auto px-4 sm:px-8 py-16">
         <div className="rounded-3xl border border-white/15 bg-gradient-to-b from-zinc-900/80 to-[#070a10] p-8 sm:p-12">
           <div className="text-center max-w-2xl mx-auto mb-8">
             <span className="text-xs font-mono uppercase tracking-widest text-sky-400">
-              CALCULADORA DE AMORTIZACIÓN
+              CALCULADORA DE RETORNO
             </span>
             <h3 className="text-2xl sm:text-4xl font-extrabold text-white mt-2">
-              ¿Cuántas ventas necesitas para recuperar tu inversión?
+              ¿Cuántas ventas necesitas para amortizar la tienda?
             </h3>
           </div>
 
-          {/* 3 Distinct Sector Buttons */}
           <div className="flex flex-wrap justify-center gap-3 mb-8">
             {[
-              { label: '🕯️🍷 Velas / Vinos (55 €)', value: 55 },
-              { label: '👕 Moda / Suplementos (95 €)', value: 95 },
-              { label: '📱 Móviles / Reparaciones (350 €)', value: 350 }
-            ].map((preset) => (
+              { label: '🕯️ Velas / Vinos (55 €)', value: 55 },
+              { label: '👕 Moda / Ropa (95 €)', value: 95 },
+              { label: '📱 Reparaciones / Móviles (350 €)', value: 350 }
+            ].map(preset => (
               <button
                 key={preset.value}
                 onClick={() => setTicketPromedio(preset.value)}
@@ -1165,7 +1003,7 @@ export default function App() {
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
             <div className="md:col-span-7 space-y-4">
               <div className="flex justify-between text-sm">
-                <span className="text-zinc-400">Ticket medio de tu cliente:</span>
+                <span className="text-zinc-400">Ticket medio por venta:</span>
                 <span className="text-xl font-extrabold text-sky-400">{ticketPromedio} €</span>
               </div>
               <input
@@ -1174,7 +1012,7 @@ export default function App() {
                 max="600"
                 step="5"
                 value={ticketPromedio}
-                onChange={(e) => setTicketPromedio(Number(e.target.value))}
+                onChange={e => setTicketPromedio(Number(e.target.value))}
                 className="w-full accent-sky-400 cursor-pointer"
               />
               <div className="flex justify-between text-[11px] font-mono text-zinc-500">
@@ -1185,19 +1023,19 @@ export default function App() {
             </div>
 
             <div className="md:col-span-5 rounded-2xl bg-sky-400/10 border border-sky-400/30 p-6 text-center">
-              <span className="text-xs font-mono uppercase text-sky-300">RETORNO DIRECTO</span>
+              <span className="text-xs font-mono uppercase text-sky-300">AMORTIZACIÓN DIRECTA</span>
               <p className="text-4xl font-extrabold text-white my-2">
-                Con solo {salesNeeded} {salesNeeded === 1 ? 'venta' : 'ventas'}
+                Con solo {salesNeeded} {salesNeeded === 1 ? 'pedido' : 'pedidos'}
               </p>
               <p className="text-xs text-zinc-300">
-                ya has amortizado el 100% de tu tienda BUILD (997 €). A partir de ahí, todo es margen para tu negocio.
+                recuperas el 100% de la inversión de tu paquete BUILD (997 €). El resto es beneficio neto.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* PRICING SECTION — BUILD (997€) + TORRENT / VALENCIA CALLOUT */}
+      {/* PLAN BUILD + ACUERDO TORRENT / VALENCIA */}
       <section id="inversion" className="relative z-10 max-w-5xl mx-auto px-4 sm:px-8 py-20">
         <div className="rounded-3xl border-2 border-sky-400/40 bg-gradient-to-b from-[#0c1424] to-[#060911] p-8 sm:p-12 shadow-[0_0_60px_rgba(56,189,248,0.12)]">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-white/10">
@@ -1209,7 +1047,7 @@ export default function App() {
                 BUILD · Crear mi eCommerce
               </h2>
               <p className="text-zinc-400 text-sm sm:text-base mt-1">
-                Creamos tu tienda Shopify lista para vender y te enseñamos a gestionarla en menos de 7 días.
+                Construcción completa en Shopify lista para facturar en menos de 7 días.
               </p>
             </div>
 
@@ -1218,7 +1056,7 @@ export default function App() {
               <p className="text-4xl sm:text-5xl font-extrabold text-white mt-1">
                 997 € <span className="text-lg font-normal text-zinc-400">+ IVA</span>
               </p>
-              <p className="text-xs text-sky-300 mt-1">Posibilidad de pago fraccionado · Entrega ≤ 7 días</p>
+              <p className="text-xs text-sky-300 mt-1">Opción de pago fraccionado · Entrega ≤ 7 días</p>
             </div>
           </div>
 
@@ -1226,10 +1064,10 @@ export default function App() {
             {[
               'Arquitectura y diseño completo en Shopify enfocado a conversión (CRO)',
               'Configuración de pagos en 1 clic (Apple Pay, Google Pay, Tarjeta y Klarna)',
-              'Sistema híbrido opcional: venta de catálogo + calendario de citas/taller',
-              'Optimización móvil ultrarrápida y estructura SEO local y nacional',
-              'Integración de analítica, píxeles de seguimiento (Meta/Google) y reseñas',
-              'Formación personalizada 1 a 1 para que sepas gestionar pedidos y stock'
+              'Sistema híbrido opcional: catálogo de productos + citas o reservas',
+              'Optimización móvil ultrarrápida y estructura técnica para SEO',
+              'Integración de analítica, píxeles de seguimiento y reseñas sociales',
+              'Formación 1 a 1 para que controles tu inventario y pedidos con soltura'
             ].map((feat, i) => (
               <div key={i} className="flex items-start gap-3">
                 <div className="w-5 h-5 rounded-full bg-sky-400/20 border border-sky-400/50 flex items-center justify-center shrink-0 mt-0.5">
@@ -1240,16 +1078,15 @@ export default function App() {
             ))}
           </div>
 
-          {/* Local Strategic Partnership Callout — Torrent o Valencia */}
           <div className="rounded-2xl bg-sky-400/10 border border-sky-400/40 p-5 mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-start gap-3.5">
               <MapPin className="w-6 h-6 text-sky-400 shrink-0 mt-0.5" />
               <div>
                 <p className="text-sm font-bold text-white">
-                  ¿Tienes un negocio físico referente en Torrent o Valencia?
+                  ¿Tienes un negocio físico en Torrent o Valencia?
                 </p>
                 <p className="text-xs text-zinc-300 mt-0.5">
-                  Estamos seleccionando comercios locales estratégicos para nuestros próximos Casos de Éxito. Consulta condiciones especiales de lanzamiento o intercambio comercial directo.
+                  Estamos seleccionando comercios locales clave para nuestros próximos Casos de Éxito. Consulta condiciones especiales o posibilidades de colaboración directa.
                 </p>
               </div>
             </div>
@@ -1260,7 +1097,7 @@ export default function App() {
 
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <a
-              href="https://wa.me/34600000000?text=Hola%20Fresh%20Agency,%20quiero%20informaci%C3%B3n%20sobre%20mi%20tienda%20Shopify"
+              href="https://wa.me/34600000000?text=Hola%20Fresh%20Agency,%20quiero%20información%20sobre%20mi%20tienda%20Shopify"
               target="_blank"
               rel="noopener noreferrer"
               className="w-full sm:w-auto px-8 py-4 rounded-full bg-sky-400 hover:bg-sky-300 text-slate-950 font-extrabold text-base text-center transition-all shadow-[0_0_30px_rgba(56,189,248,0.4)]"
@@ -1268,7 +1105,7 @@ export default function App() {
               Solicitar Propuesta para mi Negocio →
             </a>
             <p className="text-xs text-zinc-400">
-              Sin permanencias. La tienda es 100% de tu propiedad desde el día 1.
+              Sin permanencias ni comisiones sobre tus ventas. La tienda te pertenece al 100%.
             </p>
           </div>
         </div>
