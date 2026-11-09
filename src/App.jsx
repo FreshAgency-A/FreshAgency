@@ -456,6 +456,7 @@ export default function App() {
   const [leadName, setLeadName] = useState('');
   const [leadSubmitted, setLeadSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
   const faqs = [
     {
       q: '¿Cuánto tardáis en entregar la tienda lista para vender?',
@@ -1252,46 +1253,21 @@ export default function App() {
                               }`}
                             >
                               {sz.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    <div>
+                      <label className="text-xs font-bold text-zinc-300 block mb-2.5">
+                        {currentCategory.optionLabel}
+                      </label>
+                      <div className="grid sm:grid-cols-3 gap-2.5">
+                        {currentCategory.variants.map((v, idx) => {
+                          const isSelected = selectedVariantIdx === idx;
+                          return (
                             <button
-    onClick={async () => {
-      if (!leadName) {
-        alert("Por favor, indícanos el nombre de tu negocio.");
-        return;
-      }
-      setIsSubmitting(true);
-      try {
-        const response = await fetch("https://api.web3forms.com/submit", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify({
-            access_key: "fc680331-2615-4134-9eed-082fc15e973e",
-            subject: `Nuevo Lead Fresh Agency: ${leadName}`,
-            "Nombre del Negocio": leadName,
-            "Tipo de Negocio": leadType,
-            "Modalidad Deseada": leadGoal,
-          }),
-        });
-        
-        if (response.status === 200) {
-          setLeadSubmitted(true);
-        } else {
-          alert("Hubo un error al enviar la solicitud. Por favor, inténtalo de nuevo.");
-        }
-      } catch (error) {
-        console.error(error);
-        alert("Hubo un error de conexión.");
-      } finally {
-        setIsSubmitting(false);
-      }
-    }}
-    disabled={isSubmitting}
-    className={`w-full bg-[#38bdf8] hover:bg-sky-300 text-slate-950 font-black py-4 rounded-xl text-sm mt-2 transition-all flex items-center justify-center gap-2 ${isSubmitting ? 'opacity-75 cursor-wait' : ''}`}
-  >
-    {isSubmitting ? 'Enviando...' : 'Generar Propuesta BUILD →'}
-  </button>
                               key={v.id}
                               onClick={() => {
                                 setSelectedVariantIdx(idx);
@@ -2493,10 +2469,44 @@ export default function App() {
                   </div>
 
                   <button
-                    onClick={() => setLeadSubmitted(true)}
-                    className="w-full bg-[#38bdf8] hover:bg-sky-300 text-slate-950 font-black py-4 rounded-xl text-sm mt-2 transition-all"
+                    onClick={async () => {
+                      if (!leadName) {
+                        alert("Por favor, indícanos el nombre de tu negocio.");
+                        return;
+                      }
+                      setIsSubmitting(true);
+                      try {
+                        const response = await fetch("https://api.web3forms.com/submit", {
+                          method: "POST",
+                          headers: {
+                            "Content-Type": "application/json",
+                            Accept: "application/json",
+                          },
+                          body: JSON.stringify({
+                            access_key: "fc680331-2615-4134-9eed-082fc15e973e",
+                            subject: `Nuevo Lead Fresh Agency: ${leadName}`,
+                            "Nombre del Negocio": leadName,
+                            "Tipo de Negocio": leadType,
+                            "Modalidad Deseada": leadGoal,
+                          }),
+                        });
+                        
+                        if (response.status === 200) {
+                          setLeadSubmitted(true);
+                        } else {
+                          alert("Hubo un error al enviar la solicitud. Por favor, inténtalo de nuevo.");
+                        }
+                      } catch (error) {
+                        console.error(error);
+                        alert("Hubo un error de conexión.");
+                      } finally {
+                        setIsSubmitting(false);
+                      }
+                    }}
+                    disabled={isSubmitting}
+                    className={`w-full bg-[#38bdf8] hover:bg-sky-300 text-slate-950 font-black py-4 rounded-xl text-sm mt-2 transition-all flex items-center justify-center gap-2 ${isSubmitting ? 'opacity-75 cursor-wait' : ''}`}
                   >
-                    Generar Propuesta BUILD →
+                    {isSubmitting ? 'Enviando...' : 'Generar Propuesta BUILD →'}
                   </button>
                 </div>
               </div>
