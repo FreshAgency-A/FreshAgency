@@ -451,13 +451,19 @@ export default function App() {
   // --- 5. FAQ & MODAL STATE ---
   const [openFaq, setOpenFaq] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [leadType, setLeadType] = useState('Tienda Física + Reparaciones / Stock (Ej. La Poma Lab)');
-  const [leadGoal, setLeadGoal] = useState('Crear mi eCommerce BUILD llave en mano');
+  const [leadType, setLeadType] = useState('Marca de moda / streetwear');
+  const [leadGoal, setLeadGoal] = useState('Crear mi eCommerce BUILD (lleva tu tienda al siguiente nivel)');
   const [leadName, setLeadName] = useState('');
+  const [contactMethod, setContactMethod] = useState('WhatsApp');
+  const [contactValue, setContactValue] = useState('');
   const [leadSubmitted, setLeadSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const faqs = [
+    {
+      q: '¿Por qué trabajáis exclusivamente con Shopify?',
+      a: 'Porque apostamos por la excelencia técnica en una sola plataforma en lugar de dispersarnos en diez. Al especializarnos al 100% en el ecosistema Shopify, dominamos cada detalle de rendimiento, velocidad de carga, analítica y pagos en 1 clic (Apple Pay y Klarna) para llevar los resultados de tu tienda al siguiente nivel.'
+    },
     {
       q: '¿Cuánto tardáis en entregar la tienda lista para vender?',
       a: 'En un máximo de 7 días (READY IN ≤ 7 DAYS*) desde que tenemos la información y materiales de tu negocio. Trabajamos con un sistema estructurado de 6 pasos sin sorpresas.'
@@ -483,6 +489,12 @@ export default function App() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const getContactPlaceholder = () => {
+    if (contactMethod === 'WhatsApp') return 'Escribe tu número de teléfono (Ej. +34 600 000 000)';
+    if (contactMethod === 'Instagram') return 'Escribe tu usuario de Instagram (Ej. @tumarca)';
+    return 'Escribe tu correo electrónico (Ej. hola@tumarca.com)';
+  };
 
   return (
     <div
@@ -2295,7 +2307,7 @@ export default function App() {
             </div>
             <button
               onClick={() => {
-                setLeadGoal('Consultar acuerdo Caso de Éxito (Torrent / Valencia)');
+                setLeadGoal('Consultar acuerdo local');
                 setIsModalOpen(true);
               }}
               className="text-xs font-black text-[#38bdf8] hover:text-white underline underline-offset-4 whitespace-nowrap shrink-0"
@@ -2383,7 +2395,7 @@ export default function App() {
       {/* PROJECT CONFIGURATOR MODAL */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-[#0b0f17] border border-white/15 rounded-3xl max-w-lg w-full p-6 sm:p-8 relative shadow-2xl">
+          <div className="bg-[#0b0f17] border border-white/15 rounded-3xl max-w-xl w-full p-6 sm:p-8 relative shadow-2xl max-h-[92vh] overflow-y-auto">
             <button
               onClick={() => {
                 setIsModalOpen(false);
@@ -2404,23 +2416,26 @@ export default function App() {
                 </h3>
 
                 <div className="space-y-4">
+                  {/* 1. TIPO DE NEGOCIO */}
                   <div>
                     <label className="text-xs font-bold text-zinc-400 block mb-2">
                       1. Tipo de negocio:
                     </label>
-                    <div className="space-y-2">
+                    <div className="grid sm:grid-cols-2 gap-2">
                       {[
-                        'Tienda Física + Reparaciones / Stock (Ej. La Poma Lab)',
-                        'Marca de Productos (Velas, Vino, Cosmética, etc.)',
-                        'Marca de Moda / Streetwear / Suplementos'
+                        'Marca de moda / streetwear',
+                        'Marca de productos (velas, vinos, suplementos, cosmética...)',
+                        'Tienda física + reparaciones',
+                        'Servicios'
                       ].map((t) => (
                         <button
                           key={t}
+                          type="button"
                           onClick={() => setLeadType(t)}
-                          className={`w-full text-left px-4 py-3 rounded-xl text-xs sm:text-sm font-bold border transition-all ${
+                          className={`text-left px-3.5 py-2.5 rounded-xl text-xs font-bold border transition-all ${
                             leadType === t
-                              ? 'border-[#38bdf8] bg-sky-400/15 text-white'
-                              : 'border-white/10 bg-[#06080d] text-zinc-400'
+                              ? 'border-[#38bdf8] bg-sky-400/15 text-white shadow-[0_0_15px_rgba(56,189,248,0.15)]'
+                              : 'border-white/10 bg-[#06080d] text-zinc-400 hover:text-white'
                           }`}
                         >
                           {t}
@@ -2429,24 +2444,29 @@ export default function App() {
                     </div>
                   </div>
 
+                  {/* 2. MODALIDAD */}
                   <div>
                     <label className="text-xs font-bold text-zinc-400 block mb-2">
                       2. Modalidad:
                     </label>
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid sm:grid-cols-2 gap-2">
                       {[
-                        'Crear mi eCommerce BUILD llave en mano',
-                        'Vender stock + Reservar citas',
-                        'Rediseñar mi tienda actual',
-                        'Consultar acuerdo Caso de Éxito (Torrent / Valencia)'
-                      ].map((g) => (
+                        'Crear mi eCommerce BUILD (lleva tu tienda al siguiente nivel)',
+                        'Rediseñar mi tienda actual de Shopify',
+                        'Trasladar mi tienda online actual a Shopify',
+                        'Consultar acuerdo local',
+                        'Quiero saber más información sobre FreshAgency, ¡Hablemos!'
+                      ].map((g, idx) => (
                         <button
                           key={g}
+                          type="button"
                           onClick={() => setLeadGoal(g)}
-                          className={`px-3 py-2.5 rounded-xl text-xs font-bold border text-left ${
+                          className={`px-3.5 py-2.5 rounded-xl text-xs font-bold border text-left transition-all ${
+                            idx === 4 ? 'sm:col-span-2' : ''
+                          } ${
                             leadGoal === g
-                              ? 'border-[#38bdf8] bg-[#38bdf8] text-slate-950 font-black'
-                              : 'border-white/10 bg-[#06080d] text-zinc-400'
+                              ? 'border-[#38bdf8] bg-[#38bdf8] text-slate-950 font-black shadow-[0_0_15px_rgba(56,189,248,0.25)]'
+                              : 'border-white/10 bg-[#06080d] text-zinc-400 hover:text-white'
                           }`}
                         >
                           {g}
@@ -2455,58 +2475,103 @@ export default function App() {
                     </div>
                   </div>
 
+                  {/* 3. NOMBRE DEL NEGOCIO */}
                   <div>
                     <label className="text-xs font-bold text-zinc-400 block mb-1.5">
-                      3. Nombre de tu negocio o marca:
+                      3. Nombre de tu negocio:
                     </label>
                     <input
                       type="text"
-                      placeholder="Ej. La Poma Lab / Vértice Studio..."
+                      placeholder="Escribe el nombre de tu tienda o marca..."
                       value={leadName}
                       onChange={(e) => setLeadName(e.target.value)}
                       className="w-full bg-[#06080d] border border-white/15 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#38bdf8]"
                     />
                   </div>
 
+                  {/* 4. CÓMO QUIERES QUE TE CONTACTEMOS */}
+                  <div>
+                    <label className="text-xs font-bold text-zinc-400 block mb-2">
+                      4. ¿Cómo quieres que te contactemos?
+                    </label>
+                    <div className="grid grid-cols-3 gap-2 mb-2.5">
+                      {['WhatsApp', 'Instagram', 'Correo electrónico'].map((method) => (
+                        <button
+                          key={method}
+                          type="button"
+                          onClick={() => {
+                            setContactMethod(method);
+                            setContactValue('');
+                          }}
+                          className={`py-2.5 px-3 rounded-xl text-xs font-bold border text-center transition-all ${
+                            contactMethod === method
+                              ? 'border-[#38bdf8] bg-sky-400/15 text-[#38bdf8] font-black shadow-[0_0_15px_rgba(56,189,248,0.15)]'
+                              : 'border-white/10 bg-[#06080d] text-zinc-400 hover:text-white'
+                          }`}
+                        >
+                          {method}
+                        </button>
+                      ))}
+                    </div>
+
+                    <input
+                      type={
+                        contactMethod === 'Correo electrónico'
+                          ? 'email'
+                          : contactMethod === 'WhatsApp'
+                          ? 'tel'
+                          : 'text'
+                      }
+                      placeholder={getContactPlaceholder()}
+                      value={contactValue}
+                      onChange={(e) => setContactValue(e.target.value)}
+                      className="w-full bg-[#06080d] border border-sky-400/40 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-[#38bdf8]"
+                    />
+                  </div>
+
                   <button
                     onClick={async () => {
-                      if (!leadName) {
-                        alert("Por favor, indícanos el nombre de tu negocio.");
+                      if (!leadName.trim() || !contactValue.trim()) {
+                        alert('Por favor, indícanos el nombre de tu negocio y tu dato de contacto.');
                         return;
                       }
                       setIsSubmitting(true);
                       try {
-                        const response = await fetch("https://api.web3forms.com/submit", {
-                          method: "POST",
+                        const response = await fetch('https://api.web3forms.com/submit', {
+                          method: 'POST',
                           headers: {
-                            "Content-Type": "application/json",
-                            Accept: "application/json",
+                            'Content-Type': 'application/json',
+                            Accept: 'application/json'
                           },
                           body: JSON.stringify({
-                            access_key: "fc680331-2615-4134-9eed-082fc15e973e",
-                            subject: `Nuevo Lead Fresh Agency: ${leadName}`,
-                            "Nombre del Negocio": leadName,
-                            "Tipo de Negocio": leadType,
-                            "Modalidad Deseada": leadGoal,
-                          }),
+                            access_key: 'fc680331-2615-4134-9eed-082fc15e973e',
+                            subject: `Nuevo Lead Fresh Agency: ${leadName} (${contactMethod})`,
+                            'Nombre del Negocio': leadName,
+                            'Tipo de Negocio': leadType,
+                            'Modalidad Deseada': leadGoal,
+                            'Vía de Contacto Preferida': contactMethod,
+                            'Dato de Contacto': contactValue
+                          })
                         });
-                        
+
                         if (response.status === 200) {
                           setLeadSubmitted(true);
                         } else {
-                          alert("Hubo un error al enviar la solicitud. Por favor, inténtalo de nuevo.");
+                          alert('Hubo un error al enviar la solicitud. Por favor, inténtalo de nuevo.');
                         }
                       } catch (error) {
                         console.error(error);
-                        alert("Hubo un error de conexión.");
+                        alert('Hubo un error de conexión.');
                       } finally {
                         setIsSubmitting(false);
                       }
                     }}
                     disabled={isSubmitting}
-                    className={`w-full bg-[#38bdf8] hover:bg-sky-300 text-slate-950 font-black py-4 rounded-xl text-sm mt-2 transition-all flex items-center justify-center gap-2 ${isSubmitting ? 'opacity-75 cursor-wait' : ''}`}
+                    className={`w-full bg-[#38bdf8] hover:bg-sky-300 text-slate-950 font-black py-4 rounded-xl text-sm mt-2 transition-all flex items-center justify-center gap-2 ${
+                      isSubmitting ? 'opacity-75 cursor-wait' : ''
+                    }`}
                   >
-                    {isSubmitting ? 'Enviando...' : 'Generar Propuesta BUILD →'}
+                    {isSubmitting ? 'Enviando...' : 'Enviar Solicitud →'}
                   </button>
                 </div>
               </div>
@@ -2515,14 +2580,20 @@ export default function App() {
                 <div className="w-14 h-14 rounded-full bg-sky-400/15 text-[#38bdf8] flex items-center justify-center mx-auto">
                   <CheckCircle2 size={32} />
                 </div>
-                <h4 className="text-2xl font-black">¡Propuesta Lista!</h4>
+                <h4 className="text-2xl font-black">¡Solicitud Recibida!</h4>
                 <p className="text-sm text-zinc-400">
-                  Hemos preparado la hoja de ruta BUILD para{' '}
-                  <strong className="text-white">{leadName || 'tu negocio'}</strong> ({leadType}).
+                  Hemos recibido los datos de{' '}
+                  <strong className="text-white">{leadName}</strong> ({leadType}). Te contactaremos muy
+                  pronto vía <strong className="text-[#38bdf8]">{contactMethod}</strong> (
+                  <span className="text-white">{contactValue}</span>).
                 </p>
-                <div className="p-4 rounded-xl bg-[#06080d] border border-white/10 text-xs text-left text-zinc-300 font-mono">
-                  "Hola Fresh Agency, soy de {leadName || 'mi negocio'}. Quiero activar el paquete BUILD (≤
-                  7 días) bajo la modalidad: {leadGoal}."
+                <div className="p-4 rounded-xl bg-[#06080d] border border-white/10 text-xs text-left text-zinc-300 font-mono space-y-1">
+                  <div>
+                    <strong className="text-[#38bdf8]">Modalidad:</strong> {leadGoal}
+                  </div>
+                  <div>
+                    <strong className="text-[#38bdf8]">Contacto ({contactMethod}):</strong> {contactValue}
+                  </div>
                 </div>
                 <button
                   onClick={() => {
