@@ -455,7 +455,7 @@ export default function App() {
   const [leadGoal, setLeadGoal] = useState('Crear mi eCommerce BUILD llave en mano');
   const [leadName, setLeadName] = useState('');
   const [leadSubmitted, setLeadSubmitted] = useState(false);
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const faqs = [
     {
       q: '¿Cuánto tardáis en entregar la tienda lista para vender?',
@@ -466,7 +466,6 @@ export default function App() {
       a: 'Sí. En el simulador interactivo de arriba puedes probar cómo adaptamos Shopify tanto para vender stock con pago fraccionado (Klarna / Apple Pay) como para reservar citas de taller o vender packs de producto.'
     },
     {
-      const [isSubmitting, setIsSubmitting] = useState(false);
       q: '¿Necesito saber programar para gestionar la tienda después?',
       a: 'En absoluto. Nuestro paquete BUILD incluye una formación 1 a 1 grabada donde te enseñamos a controlar pedidos, stock y precios directamente desde la aplicación móvil de Shopify.'
     },
