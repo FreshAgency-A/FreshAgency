@@ -466,6 +466,7 @@ export default function App() {
       a: 'Sí. En el simulador interactivo de arriba puedes probar cómo adaptamos Shopify tanto para vender stock con pago fraccionado (Klarna / Apple Pay) como para reservar citas de taller o vender packs de producto.'
     },
     {
+      const [isSubmitting, setIsSubmitting] = useState(false);
       q: '¿Necesito saber programar para gestionar la tienda después?',
       a: 'En absoluto. Nuestro paquete BUILD incluye una formación 1 a 1 grabada donde te enseñamos a controlar pedidos, stock y precios directamente desde la aplicación móvil de Shopify.'
     },
